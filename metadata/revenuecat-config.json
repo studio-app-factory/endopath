@@ -1,0 +1,108 @@
+{
+  "project": "endopath",
+  "bundle_id": "com.gnosis.endopath",
+  "platforms": ["ios", "android"],
+  "entitlements": {
+    "premium": {
+      "description": "Unlocks unlimited tracking, clean exports, premium templates, doctor PDF export",
+      "products": [
+        "com.gnosis.endopath.lifetime",
+        "com.gnosis.endopath.weekly",
+        "com.gnosis.endopath.lifetime_upgrade"
+      ]
+    }
+  },
+  "products": [
+    {
+      "id": "com.gnosis.endopath.lifetime",
+      "type": "NON_CONSUMABLE",
+      "display_name": "Lifetime Premium",
+      "price_tier_usd": 9.99,
+      "currency_localizations": {
+        "USD": "$9.99",
+        "BRL": "R$29.90",
+        "EUR": "€8.99",
+        "GBP": "£8.99"
+      }
+    },
+    {
+      "id": "com.gnosis.endopath.weekly",
+      "type": "AUTO_RENEWABLE_SUBSCRIPTION",
+      "display_name": "Weekly Premium",
+      "price_tier_usd": 4.99,
+      "subscription_period": "P1W",
+      "currency_localizations": {
+        "USD": "$4.99/wk",
+        "BRL": "R$14.90/semana",
+        "EUR": "€4.49/semana",
+        "GBP": "£4.49/wk"
+      }
+    },
+    {
+      "id": "com.gnosis.endopath.lifetime_upgrade",
+      "type": "NON_CONSUMABLE",
+      "display_name": "Lifetime Upgrade",
+      "price_tier_usd": 19.99,
+      "description": "Upgrade from another Floseed app purchase",
+      "currency_localizations": {
+        "USD": "$19.99",
+        "BRL": "R$59.90",
+        "EUR": "€17.99",
+        "GBP": "£17.99"
+      }
+    }
+  ],
+  "offerings": [
+    {
+      "id": "default",
+      "description": "Standard paywall offering shown to new users",
+      "products": [
+        "com.gnosis.endopath.lifetime",
+        "com.gnosis.endopath.weekly"
+      ],
+      "display_order": ["lifetime", "weekly"],
+      "default_selection": "lifetime"
+    },
+    {
+      "id": "cross_promo_discount_30",
+      "description": "30% discount for users coming from other Floseed apps",
+      "products": [
+        "com.gnosis.endopath.lifetime",
+        "com.gnosis.endopath.lifetime_upgrade"
+      ],
+      "discount_percent": 30,
+      "trigger": "floseed_account_detected_with_purchase",
+      "display_order": ["lifetime", "lifetime_upgrade"]
+    },
+    {
+      "id": "lifetime_upgrade",
+      "description": "Upsell for existing lifetime purchasers from other Floseed apps",
+      "products": [
+        "com.gnosis.endopath.lifetime_upgrade"
+      ],
+      "trigger": "existing_floseed_premium_user"
+    }
+  ],
+  "paywall_config": {
+    "placement": "onboarding_step3",
+    "headline": "Unlock Full Access",
+    "subheadline": "Track without limits. Export clean reports. Share your story.",
+    "features": [
+      "Unlimited symptom & flare tracking",
+      "12-month flare pattern analysis",
+      "Clean share cards (no watermark)",
+      "Doctor-ready PDF exports",
+      "All premium templates",
+      "Full privacy — data stays on device"
+    ],
+    "social_proof": "💜 Trusted by endo warriors worldwide · 4.9★",
+    "show_restore_button": true,
+    "show_free_continue": true
+  },
+  "cross_promo_cluster": {
+    "cluster": "A",
+    "apps": ["migrainary", "fibroline", "gutscout", "ms_compass"],
+    "discount_percent": 30,
+    "description": "Chronic Illness Diaries cluster"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "app": "Endopath",
+  "device_specs": [
+    {"name": "iPhone-6.5", "width": 1290, "height": 2796},
+    {"name": "iPhone-5.5", "width": 1242, "height": 2208},
+    {"name": "Android-Phone", "width": 1080, "height": 1920},
+    {"name": "Android-Tablet", "width": 1536, "height": 2048}
+  ],
+  "screens": [
+    {"path": "/", "name": "01-home", "wait_for_ms": 800, "caption": "Quiet, careful, yours."},
+    {"path": "/log_entry", "name": "02-log", "wait_for_ms": 600, "caption": "Log a flare with care."},
+    {"path": "/pain_map", "name": "03-pain-map", "wait_for_ms": 600, "caption": "Map where it hurts."},
+    {"path": "/calendar", "name": "04-calendar", "wait_for_ms": 600, "caption": "Patterns become visible."},
+    {"path": "/shareable", "name": "05-share", "wait_for_ms": 600, "caption": "Take it to your specialist."}
+  ],
+  "playwright_script": "npx playwright test scripts/screenshot.spec.ts"
+}

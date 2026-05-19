@@ -1,0 +1,22 @@
+{
+  "name": "Endopath — Endometriosis Tracker",
+  "short_name": "Endopath",
+  "description": "Privacy-first endometriosis symptom & flare tracker. Map your pain, spot patterns, share your story.",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#faf5f0",
+  "theme_color": "#c97d7d",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "icon-1024.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+
+  ],
+  "categories": ["health", "medical", "lifestyle"],
+  "lang": "en",
+  "dir": "ltr"
+}

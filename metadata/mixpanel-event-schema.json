@@ -1,0 +1,182 @@
+{
+  "project": "endopath",
+  "app_id": "com.gnosis.endopath",
+  "version": "1.0.0",
+  "tracking_config": {
+    "idfa_usage": false,
+    "att_required": false,
+    "default_tracking": true,
+    "anonymous_ids": true,
+    "server_side_retention": "D1_D7_D30_from_app_opened"
+  },
+  "user_properties": {
+    "install_date": {
+      "type": "string",
+      "format": "ISO 8601 date",
+      "description": "First install date"
+    },
+    "app_id": {
+      "type": "string",
+      "value": "endopath",
+      "description": "Portfolio app identifier"
+    },
+    "is_premium": {
+      "type": "boolean",
+      "description": "Whether user has purchased premium"
+    },
+    "purchase_product": {
+      "type": "string",
+      "nullable": true,
+      "description": "Product ID if purchased (e.g., com.gnosis.endopath.lifetime)"
+    },
+    "total_sessions": {
+      "type": "number",
+      "description": "Lifetime session count"
+    },
+    "last_session_at": {
+      "type": "string",
+      "format": "ISO 8601 datetime",
+      "description": "Timestamp of most recent session"
+    },
+    "total_share_actions": {
+      "type": "number",
+      "description": "Total number of share actions"
+    },
+    "floseed_portfolio_apps": {
+      "type": "array",
+      "items": "string",
+      "description": "Other Floseed apps user has installed/purchased"
+    }
+  },
+  "standard_events": [
+    {
+      "event": "app_opened",
+      "description": "Fired on every app launch",
+      "params": {
+        "is_first_open": "boolean",
+        "session_count": "number",
+        "days_since_install": "number"
+      }
+    },
+    {
+      "event": "onboarding_started",
+      "description": "User begins onboarding flow",
+      "params": {}
+    },
+    {
+      "event": "onboarding_step_completed",
+      "description": "User completes an onboarding step",
+      "params": {
+        "step_name": "string (step_1, step_2, step_3, step_4)"
+      }
+    },
+    {
+      "event": "onboarding_completed",
+      "description": "User completes all onboarding steps",
+      "params": {}
+    },
+    {
+      "event": "onboarding_abandoned",
+      "description": "User exits onboarding before completion",
+      "params": {
+        "last_step": "string"
+      }
+    },
+    {
+      "event": "paywall_viewed",
+      "description": "Paywall is displayed to user",
+      "params": {
+        "trigger": "string (onboarding_step3, share_export, settings_upgrade, feature_limit_reached)"
+      }
+    },
+    {
+      "event": "paywall_purchased",
+      "description": "User completes a purchase",
+      "params": {
+        "product_id": "string",
+        "price_usd": "number",
+        "paywall_type": "string (revenuecat_ui)"
+      }
+    },
+    {
+      "event": "paywall_dismissed",
+      "description": "User dismisses paywall without purchasing",
+      "params": {
+        "last_trigger": "string"
+      }
+    },
+    {
+      "event": "paywall_restored",
+      "description": "User taps Restore Purchases",
+      "params": {}
+    },
+    {
+      "event": "session_started",
+      "description": "New session begins",
+      "params": {}
+    },
+    {
+      "event": "session_ended",
+      "description": "Session ends (app goes to background or closes)",
+      "params": {
+        "duration_seconds": "number"
+      }
+    },
+    {
+      "event": "shareable_generated",
+      "description": "User generates a share card",
+      "params": {
+        "template_used": "string (watercolor_rose, night_bloom, minimal_clean)"
+      }
+    },
+    {
+      "event": "shareable_shared",
+      "description": "User shares the generated card",
+      "params": {
+        "destination": "string (system_share, instagram_stories, tiktok, reddit, twitter, copy_link, save_to_photos)"
+      }
+    },
+    {
+      "event": "flare_logged",
+      "description": "PRIMARY VALUE EVENT — user logs a symptom/flare entry. Used for activation and D7 retention measurement.",
+      "params": {
+        "pain_level": "number (1-10)",
+        "is_flare": "boolean",
+        "symptom_count": "number",
+        "location_count": "number"
+      }
+    },
+    {
+      "event": "floseed_account_detected",
+      "description": "Existing Floseed account found on device",
+      "params": {
+        "portfolio_apps": "string[]"
+      }
+    },
+    {
+      "event": "cross_promo_shown",
+      "description": "Cross-promotion carousel displayed",
+      "params": {
+        "apps_shown": "string[] (app IDs)"
+      }
+    },
+    {
+      "event": "cross_promo_tapped",
+      "description": "User taps a cross-promoted app",
+      "params": {
+        "app_id": "string"
+      }
+    }
+  ],
+  "retention_definition": {
+    "D1": "app_opened on day after install_date",
+    "D7": "app_opened on day 7 after install_date",
+    "D30": "app_opened on day 30 after install_date",
+    "activation": "flare_logged event fired within first 3 days",
+    "success_thresholds": {
+      "D7_retention": ">25%",
+      "paywall_conversion": ">40% of viewers",
+      "kill_threshold": "<$50 MRR by month 4"
+    }
+  }
+}

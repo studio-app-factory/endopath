@@ -1,0 +1,208 @@
+// ============================================================
+// ENDOPATH — Zustand Global Store
+// ============================================================
+
+import { create } from 'zustand';
+import type {
+  AppScreen,
+  PaywallTrigger,
+  UserProfile,
+  ShareTemplateId,
+} from '@/types';
+import { getDB } from './db';
+import { track } from './analytics';
+
+interface EndopathStore {
+  // State
+  currentScreen: AppScreen;
+  isOnboarding: boolean;
+  onboardingStep: number;
+  showPaywall: boolean;
+  paywallTrigger: PaywallTrigger | null;
+  showCrossPromo: boolean;
+  isPremium: boolean;
+  trialEntriesRemaining: number;
+  sessionStart: number;
+  selectedTemplate: ShareTemplateId;
+
+  // Screen navigation
+  setScreen: (screen: AppScreen) => void;
+
+  // Onboarding
+  startOnboarding: () => void;
+  nextOnboardingStep: () => void;
+  completeOnboarding: () => void;
+
+  // Paywall
+  triggerPaywall: (trigger: PaywallTrigger) => void;
+  dismissPaywall: () => void;
+  completePurchase: (productId: string) => void;
+  restorePurchases: () => void;
+
+  // Cross-promo
+  openCrossPromo: () => void;
+  closeCrossPromo: () => void;
+
+  // Trial
+  incrementTrialEntries: () => boolean;
+  setPremium: (value: boolean) => void;
+
+  // Profile
+  loadProfile: () => Promise<void>;
+  saveProfile: () => Promise<void>;
+
+  // Session
+  startSession: () => void;
+  endSession: () => void;
+
+  // Shareable
+  setTemplate: (id: ShareTemplateId) => void;
+}
+
+export const useStore = create<EndopathStore>((set, get) => ({
+  // --- State defaults ---
+  currentScreen: 'home',
+  isOnboarding: true,
+  onboardingStep: 0,
+  showPaywall: false,
+  paywallTrigger: null,
+  showCrossPromo: false,
+  isPremium: false,
+  trialEntriesRemaining: 10,
+  sessionStart: 0,
+  selectedTemplate: 'watercolor_rose',
+
+  // --- Screen navigation ---
+  setScreen: (screen) => set({ currentScreen: screen }),
+
+  // --- Onboarding ---
+  startOnboarding: () => {
+    set({ isOnboarding: true, onboardingStep: 1, currentScreen: 'onboarding' });
+    track('onboarding_started', {});
+  },
+
+  nextOnboardingStep: () => {
+    const step = get().onboardingStep + 1;
+    set({ onboardingStep: step });
+    track('onboarding_step_completed', { step_name: `step_${step - 1}` });
+  },
+
+  completeOnboarding: () => {
+    set({ isOnboarding: false, currentScreen: 'home' });
+    track('onboarding_completed', {});
+    get().saveProfile();
+  },
+
+  // --- Paywall ---
+  triggerPaywall: (trigger) => {
+    set({ showPaywall: true, paywallTrigger: trigger, currentScreen: 'paywall' });
+    track('paywall_viewed', { trigger });
+  },
+
+  dismissPaywall: () => {
+    const trigger = get().paywallTrigger;
+    set({ showPaywall: false, paywallTrigger: null });
+    track('paywall_dismissed', { last_trigger: trigger || '' });
+    if (get().isOnboarding) {
+      set({ currentScreen: 'onboarding' });
+    } else {
+      set({ currentScreen: 'home' });
+    }
+  },
+
+  completePurchase: (productId) => {
+    const isUpgrade = productId.includes('lifetime_upgrade');
+    const isLifetime = productId.includes('lifetime');
+    const price = isUpgrade ? 19.99 : isLifetime ? 9.99 : 4.99;
+    set({ isPremium: true, showPaywall: false, paywallTrigger: null });
+    track('paywall_purchased', {
+      product_id: productId,
+      price_usd: price,
+      paywall_type: 'revenuecat_ui',
+    });
+    get().saveProfile();
+  },
+
+  restorePurchases: () => {
+    track('paywall_restored', {});
+    // In production: RevenueCat.restorePurchases()
+  },
+
+  // --- Cross-promo ---
+  openCrossPromo: () => {
+    set({ showCrossPromo: true, currentScreen: 'cross_promo' });
+    track('cross_promo_shown', {
+      apps_shown: ['migrainary', 'fibroline', 'gutscout', 'ms_compass'],
+    });
+  },
+
+  closeCrossPromo: () => set({ showCrossPromo: false, currentScreen: 'home' }),
+
+  // --- Trial ---
+  incrementTrialEntries: () => {
+    const remaining = get().trialEntriesRemaining;
+    if (remaining <= 0) return false;
+    set({ trialEntriesRemaining: remaining - 1 });
+    return true;
+  },
+
+  setPremium: (value) => set({ isPremium: value }),
+
+  // --- Profile ---
+  loadProfile: async () => {
+    try {
+      const db = getDB();
+      const profile = await db.userProfile.get('default');
+      if (profile) {
+        set({
+          isPremium: profile.isPremium,
+          trialEntriesRemaining: profile.isPremium
+            ? Infinity
+            : Math.max(0, 10 - (profile.trialEntriesUsed || 0)),
+        });
+      }
+    } catch {
+      // No profile yet
+    }
+  },
+
+  saveProfile: async () => {
+    const db = getDB();
+    const state = get();
+    const existing = await db.userProfile.get('default');
+    const profile: UserProfile = {
+      id: 'default',
+      installDate: existing?.installDate || new Date().toISOString(),
+      isPremium: state.isPremium,
+      purchaseProduct: existing?.purchaseProduct,
+      totalSessions: (existing?.totalSessions || 0) + 1,
+      lastSessionAt: new Date().toISOString(),
+      totalShareActions: existing?.totalShareActions || 0,
+      floseedPortfolioApps: existing?.floseedPortfolioApps || [],
+      onboardingCompleted: !state.isOnboarding,
+      trialEntriesUsed: existing?.trialEntriesUsed || 0,
+      currency: existing?.currency || 'USD',
+      locale: existing?.locale || 'en',
+    };
+    await db.userProfile.put(profile);
+  },
+
+  // --- Session ---
+  startSession: () => {
+    const now = Date.now();
+    set({ sessionStart: now });
+    track('session_started', {});
+  },
+
+  endSession: () => {
+    const start = get().sessionStart;
+    if (start > 0) {
+      const duration = Math.round((Date.now() - start) / 1000);
+      track('session_ended', { duration_seconds: duration });
+      set({ sessionStart: 0 });
+    }
+  },
+
+  // --- Shareable ---
+  setTemplate: (id) => set({ selectedTemplate: id }),
+}));
