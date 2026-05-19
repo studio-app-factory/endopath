@@ -1,0 +1,149 @@
+name: Build Android
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'Build type'
+        required: true
+        default: 'release'
+        type: choice
+        options: [release, debug]
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    name: Build Android AAB
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install web dependencies
+        run: npm ci
+
+      - name: Add Capacitor packages (if not already present)
+        run: |
+          if ! grep -q '"@capacitor/android"' package.json; then
+            npm install \
+              @capacitor/core@^6 \
+              @capacitor/cli@^6 \
+              @capacitor/android@^6 \
+              @capacitor/splash-screen@^6 \
+              @capacitor/status-bar@^6 \
+              @capacitor/keyboard@^6 \
+              @capacitor/assets@^3
+          fi
+
+      - name: Build web app
+        run: npm run build
+
+      - name: Add Android platform
+        run: npx cap add android || echo "android platform already exists"
+
+      - name: Sync Capacitor
+        run: npx cap sync android
+
+      - name: Generate icons and splash screen
+        run: |
+          if [ -f "listing/icon.svg" ] && [ -f "listing/splash.svg" ]; then
+            mkdir -p assets
+            cp listing/icon.svg assets/icon.svg
+            cp listing/splash.svg assets/splash.svg
+            BG=$(grep -o "backgroundColor: '[^']*'" capacitor.config.ts | head -1 | grep -o "'#[^']*'" | tr -d "'")
+            BG=${BG:-#000000}
+            npx @capacitor/assets generate \
+              --iconBackgroundColor "$BG" \
+              --splashBackgroundColor "$BG" \
+              --android
+          else
+            echo "No listing/icon.svg or listing/splash.svg found — skipping icon generation"
+          fi
+
+      - name: Configure Android signing
+        run: |
+          cat > android/keystore.properties << EOF
+          storeFile=release.jks
+          storePassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}
+          keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}
+          EOF
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android/app/release.jks
+
+      - name: Inject signing config into build.gradle
+        run: |
+          python3 << 'PYTHON'
+          import re
+          with open('android/app/build.gradle', 'r') as f:
+              content = f.read()
+          if 'signingConfigs' not in content:
+              signing = """
+              signingConfigs {
+                  release {
+                      def props = new Properties()
+                      def propsFile = rootProject.file('keystore.properties')
+                      if (propsFile.exists()) { props.load(new FileInputStream(propsFile)) }
+                      storeFile props['storeFile'] ? file(props['storeFile']) : null
+                      storePassword props['storePassword']
+                      keyAlias props['keyAlias']
+                      keyPassword props['keyPassword']
+                  }
+              }
+          """
+              content = re.sub(r'(\s+buildTypes\s*\{)', signing + r'\1', content, count=1)
+              content = content.replace(
+                  "minifyEnabled false\n            proguardFiles",
+                  "minifyEnabled false\n            signingConfig signingConfigs.release\n            proguardFiles"
+              )
+              with open('android/app/build.gradle', 'w') as f:
+                  f.write(content)
+          PYTHON
+
+      - name: Grant Gradle execute permission
+        run: chmod +x android/gradlew
+
+      - name: Build release AAB
+        working-directory: android
+        run: ./gradlew bundleRelease --no-daemon
+
+      - name: Read package name from capacitor config
+        id: pkg
+        run: |
+          PKG=$(grep -o "appId: '[^']*'" capacitor.config.ts | head -1 | grep -o "'[^']*'" | tr -d "'")
+          echo "package_name=$PKG" >> $GITHUB_OUTPUT
+
+      - name: Upload AAB artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-release-aab
+          path: android/app/build/outputs/bundle/release/*.aab
+          retention-days: 30
+
+      - name: Upload to Google Play (Internal Testing)
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: ${{ steps.pkg.outputs.package_name }}
+          releaseFiles: android/app/build/outputs/bundle/release/*.aab
+          track: internal
+          status: draft

@@ -22,3 +22,20 @@ yarn-debug.log*
 pnpm-debug.log*
 coverage/
 .nyc_output/
+
+# Capacitor / native platforms (generated in CI — do not commit)
+android/
+ios/
+.gradle/
+local.properties
+
+# Capacitor generated icon/splash assets
+assets/icon.png
+assets/splash.png
+assets/icon-foreground.png
+assets/icon-background.png
+
+# Android signing — NEVER commit
+*.keystore
+*.jks
+keystore.properties
