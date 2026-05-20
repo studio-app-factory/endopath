@@ -1,6 +1,10 @@
 import { test } from '@playwright/test';
 import * as path from 'path';
 import * as fs from 'fs';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const CONFIG_PATH = path.join(__dirname, '..', 'listing', 'screenshots.config.json');
 const config = JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf-8'));
