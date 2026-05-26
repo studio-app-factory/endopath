@@ -21,6 +21,8 @@ import type { ExportConfig, ExportSection } from '@/types';
 export function SettingsScreen() {
   const isPremium = useStore((s) => s.isPremium);
   const triggerPaywall = useStore((s) => s.triggerPaywall);
+  const adsConsent = useStore((s) => s.adsConsent);
+  const setAdsConsent = useStore((s) => s.setAdsConsent);
   const isEffectivePro = useIsEffectivePro();
   const trialDaysLeft = useTrialDaysLeft();
   const [showExport, setShowExport] = useState(false);
@@ -235,15 +237,45 @@ export function SettingsScreen() {
           All your data is stored locally on your device. Nothing is sent to the cloud. Your
           symptom history, pain maps, and cycle data are encrypted at rest.
         </p>
-        <div className="flex gap-4">
+
+        {/* Ads consent toggle — only shown to free users; Pro users have no ads */}
+        {!isEffectivePro && (
+          <div className="pt-3 border-t border-[#E8D5CC]/70">
+            <div className="flex items-center justify-between gap-3 mb-2">
+              <div className="min-w-0">
+                <p className="text-xs font-semibold text-[#3D1A24]">Show banner ads</p>
+                <p className="text-[11px] text-[#7A5560]/85">
+                  Helps keep the free tier free. AdMob receives device ID, IP, advertising ID.
+                </p>
+              </div>
+              <button
+                onClick={() => setAdsConsent(adsConsent === 'accepted' ? 'rejected' : 'accepted')}
+                role="switch"
+                aria-checked={adsConsent === 'accepted'}
+                aria-label="Show banner ads"
+                className={`relative w-10 h-6 rounded-full transition-colors cursor-pointer flex-shrink-0 ${
+                  adsConsent === 'accepted' ? 'bg-[#8B3D52]' : 'bg-[#E8D5CC]'
+                }`}
+              >
+                <span
+                  className={`absolute top-1 w-4 h-4 rounded-full bg-[#FFFAF5] shadow transition-all ${
+                    adsConsent === 'accepted' ? 'right-1' : 'left-1'
+                  }`}
+                />
+              </button>
+            </div>
+          </div>
+        )}
+
+        <div className="flex gap-4 pt-1">
           <button
-            onClick={() => window.open('https://endopath.app/privacy', '_blank')}
+            onClick={() => window.open('https://studio-app-factory.github.io/endopath/privacy.html', '_blank')}
             className="text-xs text-[#8B3D52] font-medium hover:text-[#8B3D52] cursor-pointer"
           >
             Privacy Policy
           </button>
           <button
-            onClick={() => window.open('https://endopath.app/terms', '_blank')}
+            onClick={() => window.open('https://studio-app-factory.github.io/endopath/terms.html', '_blank')}
             className="text-xs text-[#8B3D52] font-medium hover:text-[#8B3D52] cursor-pointer"
           >
             Terms of Service

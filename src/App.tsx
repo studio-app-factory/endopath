@@ -17,6 +17,7 @@ import { SettingsScreen } from '@/components/settings/SettingsScreen';
 import { PaywallScreen } from '@/components/paywall/PaywallScreen';
 import { CrossPromoCarousel } from '@/components/cross-promo/CrossPromoCarousel';
 import { BottomNav } from '@/components/ui/BottomNav';
+import { ConsentDialog } from '@/components/ads/ConsentDialog';
 
 export default function App() {
   const {
@@ -143,6 +144,9 @@ export default function App() {
 
       {/* Bottom navigation */}
       <BottomNav />
+
+      {/* Ads consent dialog — self-gates on free tier + adsConsent === 'unknown' */}
+      <ConsentDialog />
     </div>
   );
 }

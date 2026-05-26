@@ -1,5 +1,28 @@
 # App Store Listing — Endopath
 
+## App Privacy ("nutrition labels") — answers
+
+Use these answers when filling App Store Connect → App Privacy.
+
+### Data Linked to You
+
+| Data | Used for | Notes |
+|---|---|---|
+| Purchases (subscription status) | App functionality | Via Apple StoreKit + RevenueCat |
+| Identifiers — Device ID, IDFA | Third-Party Advertising | Free tier only, only if user grants ATT permission AND accepts in-app consent. Pro/trial users: not collected. |
+| Coarse Location | Third-Party Advertising | Derived from IP by AdMob. Free tier only, with consent. |
+| Diagnostics — Crash data | App functionality | Sentry, no health data. |
+| Usage Data — Product interaction | Analytics | Mixpanel, anonymous device ID, no health data. |
+
+### Data Not Linked to You
+
+| Data | Notes |
+|---|---|
+| Health & Fitness — Health data | **Stored only on-device. Not collected by us at all.** Declare as "Not collected" in App Store Connect since it never leaves the device. |
+
+### Tracking
+**Yes, this app uses tracking** — only when (a) the user is on the free tier, (b) the user accepts in-app consent, AND (c) on iOS, the user grants ATT permission. Otherwise the app does not call any tracking SDK.
+
 ## en (English — Primary)
 
 ### App Name (30 chars max)

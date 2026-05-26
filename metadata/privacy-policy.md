@@ -1,6 +1,6 @@
 # Privacy Policy — Endopath
 
-**Last Updated: January 2026**
+**Last Updated: 26 May 2026**
 
 ## Our Commitment
 
@@ -21,7 +21,29 @@ To improve the app and understand usage patterns, we collect anonymous, non-iden
 
 **None of these events contain health data, symptom details, pain locations, or any personally identifiable health information.**
 
-## Third-Party Services
+## Advertising (free tier only)
+
+The free tier shows a banner ad on two screens (home dashboard and cycle history calendar). **Endopath Pro subscribers and users inside the 14-day Pro trial see no ads, and the ad SDK is not initialised at all for them.**
+
+### Google AdMob
+
+AdMob is the only third-party SDK shipped with Endopath that touches device data.
+
+**What AdMob receives when ads are shown:**
+- Advertising identifier (Google Advertising ID on Android; IDFA on iOS, only if you grant App Tracking Transparency permission)
+- IP address (Google may derive an approximate, city-level location from this)
+- Device model, OS version, language, screen size
+- Whether this is an ad impression or click
+
+**What AdMob does NOT receive.** Your symptoms, pain levels, body-map entries, cycle records, medications, notes, or any other content you create in the app. That data never leaves your device.
+
+**Consent.** The first time you open Endopath as a free user, the app asks whether you'll accept banner ads. Until you tap Accept, the ad SDK is never initialised and no network call is made to any AdMob domain. You can change this any time in Settings → Privacy & Data → "Show banner ads". Upgrading to Endopath Pro removes ads entirely.
+
+**Category blocks.** AdMob is instructed never to serve ads in these categories: gambling, alcohol, weight-loss / dieting / fasting, fertility and IVF, MLM / network marketing, dating, religious content, political content, cosmetic surgery and injectables, and prescription medicines (including Ozempic and similar).
+
+**Retention.** Governed by [Google's privacy policy](https://policies.google.com/privacy).
+
+## Other Third-Party Services
 
 ### RevenueCat (Purchases)
 RevenueCat processes in-app purchases. They receive your anonymous app user ID and purchase token. They do not receive health data. [RevenueCat Privacy Policy](https://www.revenuecat.com/privacy)

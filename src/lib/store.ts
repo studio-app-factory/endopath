@@ -4,6 +4,7 @@
 
 import { create } from 'zustand';
 import type {
+  AdsConsent,
   AppScreen,
   PaywallTrigger,
   UserProfile,
@@ -33,6 +34,8 @@ interface EndopathStore {
   trialEndsAt: string | null;
   /** True once the trial has been started (prevents re-offer). */
   trialUsed: boolean;
+  /** Ad-tracking consent. SDK only initialises when this is 'accepted'. */
+  adsConsent: AdsConsent;
   sessionStart: number;
   selectedTemplate: ShareTemplateId;
 
@@ -59,6 +62,10 @@ interface EndopathStore {
   startTrial: () => void;
   setPremium: (value: boolean) => void;
 
+  // Ads consent
+  /** Set the consent state and persist it. Accepting initialises the ad SDK. */
+  setAdsConsent: (consent: AdsConsent) => void;
+
   // Profile
   loadProfile: () => Promise<void>;
   saveProfile: () => Promise<void>;
@@ -82,6 +89,7 @@ export const useStore = create<EndopathStore>((set, get) => ({
   isPremium: false,
   trialEndsAt: null,
   trialUsed: false,
+  adsConsent: 'unknown',
   sessionStart: 0,
   selectedTemplate: 'watercolor_rose',
 
@@ -194,6 +202,16 @@ export const useStore = create<EndopathStore>((set, get) => ({
 
   setPremium: (value) => set({ isPremium: value }),
 
+  // --- Ads consent ---
+  setAdsConsent: (consent) => {
+    const previous = get().adsConsent;
+    set({ adsConsent: consent });
+    track(consent === 'accepted' ? 'ads_consent_accepted' : 'ads_consent_rejected', {
+      previous,
+    });
+    get().saveProfile();
+  },
+
   // --- Profile ---
   loadProfile: async () => {
     try {
@@ -204,6 +222,7 @@ export const useStore = create<EndopathStore>((set, get) => ({
           isPremium: profile.isPremium,
           trialEndsAt: profile.trialEndsAt ?? null,
           trialUsed: profile.trialUsed ?? false,
+          adsConsent: profile.adsConsent ?? 'unknown',
         });
       }
     } catch {
@@ -254,6 +273,7 @@ export const useStore = create<EndopathStore>((set, get) => ({
       onboardingCompleted: !state.isOnboarding,
       trialEndsAt: state.trialEndsAt,
       trialUsed: state.trialUsed,
+      adsConsent: state.adsConsent,
       currency: existing?.currency || 'AUD',
       locale: existing?.locale || 'en',
     };
@@ -311,6 +331,20 @@ export function useTrialDaysLeft(): number | null {
     if (!isTrialActive(s)) return null;
     const ms = new Date(s.trialEndsAt!).getTime() - Date.now();
     return Math.max(0, Math.ceil(ms / (24 * 60 * 60 * 1000)));
+  });
+}
+
+/**
+ * Whether banner ads should show right now. Composes the three gates in the
+ * order they must be checked: pro/trial → consent → platform/keys. Components
+ * use this single selector instead of stitching the checks together
+ * themselves, so the rules can't drift between call sites.
+ */
+export function useAdsAllowed(): boolean {
+  return useStore((s) => {
+    if (isEffectivePro(s)) return false;
+    if (s.adsConsent !== 'accepted') return false;
+    return true;
   });
 }
 

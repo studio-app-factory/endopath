@@ -8,6 +8,7 @@ import { getDB } from '@/lib/db';
 import type { SymptomEntry } from '@/types';
 import { useStore, useIsEffectivePro } from '@/lib/store';
 import { freeWindowCutoffDate } from '@/lib/limits';
+import { AdBanner } from '@/components/ads/AdBanner';
 
 export function CycleCalendar() {
   const setScreen = useStore((s) => s.setScreen);
@@ -239,6 +240,9 @@ export function CycleCalendar() {
           )}
         </div>
       )}
+
+      {/* Banner ad slot — free tier only, gated inside AdBanner */}
+      <AdBanner />
     </div>
   );
 }
