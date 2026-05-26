@@ -3,13 +3,16 @@
 // ============================================================
 
 import { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Flame, Plus } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Flame, Lock, Plus } from 'lucide-react';
 import { getDB } from '@/lib/db';
 import type { SymptomEntry } from '@/types';
-import { useStore } from '@/lib/store';
+import { useStore, useIsEffectivePro } from '@/lib/store';
+import { freeWindowCutoffDate } from '@/lib/limits';
 
 export function CycleCalendar() {
-  const { setScreen } = useStore();
+  const setScreen = useStore((s) => s.setScreen);
+  const triggerPaywall = useStore((s) => s.triggerPaywall);
+  const isEffectivePro = useIsEffectivePro();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [entries, setEntries] = useState<Map<string, SymptomEntry[]>>(new Map());
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -40,7 +43,20 @@ export function CycleCalendar() {
     setEntries(map);
   };
 
-  const prevMonth = () => setCurrentDate(new Date(year, month - 1, 1));
+  // Free users can only scroll back to a month that contains some day inside
+  // the 90-day window. Once you're already at that boundary, prev-month opens
+  // the paywall instead of navigating.
+  const prevTargetEnd = new Date(year, month, 0).toISOString().split('T')[0]; // last day of prev month
+  const cutoff = freeWindowCutoffDate();
+  const canGoPrev = isEffectivePro || prevTargetEnd >= cutoff;
+
+  const prevMonth = () => {
+    if (!canGoPrev) {
+      triggerPaywall('history_locked');
+      return;
+    }
+    setCurrentDate(new Date(year, month - 1, 1));
+  };
   const nextMonth = () => setCurrentDate(new Date(year, month + 1, 1));
 
   const getPainStyle = (level: number): string => {
@@ -74,9 +90,13 @@ export function CycleCalendar() {
       <div className="flex items-center justify-between">
         <button
           onClick={prevMonth}
-          className="w-11 h-11 rounded-2xl bg-[#FFFAF5] border border-[#E8D5CC]/70 flex items-center justify-center hover:bg-[#3D1A24]/6 transition-colors cursor-pointer"
+          aria-label={canGoPrev ? 'Previous month' : 'Pro required to view older history'}
+          className="w-11 h-11 rounded-2xl bg-[#FFFAF5] border border-[#E8D5CC]/70 flex items-center justify-center hover:bg-[#3D1A24]/6 transition-colors cursor-pointer relative"
         >
           <ChevronLeft className="w-4 h-4 text-[#7A5560]" strokeWidth={2} />
+          {!canGoPrev && (
+            <Lock className="w-3 h-3 text-[#8B3D52] absolute -top-1 -right-1 bg-[#FFFAF5] rounded-full p-0.5 border border-[#E8D5CC]" strokeWidth={2.5} />
+          )}
         </button>
         <h2 className="text-2xl font-semibold text-[#3D1A24] font-['Cormorant_Garamond']">
           {currentDate.toLocaleDateString('en', { month: 'long', year: 'numeric' })}

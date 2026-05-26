@@ -19,27 +19,33 @@ By downloading, installing, or using Endopath ("the App"), you agree to these Te
 ## 4. Subscriptions & Purchases
 
 ### Free Tier
-Endopath offers a free tier with limited entries. The free tier includes:
-- Up to 10 symptom entries
-- Access to basic share card generation (with watermark)
+Endopath's free tier is permanent and has no usage cap. It includes:
+- Full body pain map
+- Unlimited symptom logging
+- Unlimited cycle and period logging
+- A rolling 90-day window of your history (older data stays on your device and becomes visible again if you upgrade to Pro)
 - All privacy protections
 
-### Premium (Paid)
-Premium access removes all limits and unlocks:
-- Unlimited symptom entries
-- Clean share card exports (no watermark)
-- All premium templates
-- Doctor PDF export
+### Endopath Pro
+Pro unlocks:
+- Unlimited access to your entire history
+- Doctor-ready PDF exports
+- Cycle and symptom correlation reports
+- Cross-symptom analytics
+- Data backup and restore
+- Ad-free experience
 
-### Pricing
-- Lifetime: $9.99 USD (one-time)
-- Weekly: $4.99 USD/week (auto-renewing)
-- Lifetime Upgrade: $19.99 USD (for existing lifetime users upgrading from another Floseed app)
+### 14-Day Free Trial
+New users can start a one-time 14-day free trial of Endopath Pro with no payment method required and no auto-conversion at the end. At the end of the trial, Pro features become unavailable unless you explicitly choose to subscribe.
+
+### Pricing (AUD)
+- Annual: $69 AUD/year (auto-renewing)
+- Monthly: $9.99 AUD/month (auto-renewing)
 
 Prices vary by region. All purchases are processed through the App Store / Google Play and are subject to their respective terms.
 
 ### Auto-Renewal
-Weekly subscriptions auto-renew unless canceled at least 24 hours before the renewal date. Manage or cancel your subscription in your device's Account Settings.
+Annual and monthly subscriptions auto-renew unless canceled at least 24 hours before the renewal date. The 14-day free trial does NOT auto-convert into a paid subscription. Manage or cancel your subscription in your device's Account Settings.
 
 ### Refunds
 Refunds are handled by Apple (App Store) or Google (Google Play) according to their respective policies. We cannot process refunds directly.
@@ -48,7 +54,7 @@ Refunds are handled by Apple (App Store) or Google (Google Play) according to th
 
 The App name "Endopath," the Endopath logo, all original templates, designs, and code are the intellectual property of Floseed Health. You may not copy, modify, distribute, or create derivative works without permission.
 
-**Share Cards**: You are granted a limited license to share Endopath-generated infographic cards on social media for personal, non-commercial use, provided the "made with Endopath" attribution remains intact (free tier) or is preserved (paid tier).
+**Share Cards**: Share-card export is a Pro feature. Pro subscribers are granted a limited license to share Endopath-generated infographic cards on social media for personal, non-commercial use.
 
 ## 6. Limitation of Liability
 

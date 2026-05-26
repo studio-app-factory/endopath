@@ -27,7 +27,7 @@
     "purchase_product": {
       "type": "string",
       "nullable": true,
-      "description": "Product ID if purchased (e.g., com.gnosis.endopath.lifetime)"
+      "description": "Product ID if purchased (e.g., com.gnosis.endopath.pro.annual)"
     },
     "total_sessions": {
       "type": "number",
@@ -86,7 +86,7 @@
       "event": "paywall_viewed",
       "description": "Paywall is displayed to user",
       "params": {
-        "trigger": "string (onboarding_step3, share_export, settings_upgrade, feature_limit_reached)"
+        "trigger": "string (onboarding_step3, share_export, settings_upgrade, history_locked, analytics_locked, backup_locked)"
       }
     },
     {

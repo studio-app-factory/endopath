@@ -27,8 +27,12 @@ interface EndopathStore {
   showPaywall: boolean;
   paywallTrigger: PaywallTrigger | null;
   showCrossPromo: boolean;
+  /** True iff the user holds the RevenueCat 'premium' entitlement. */
   isPremium: boolean;
-  trialEntriesRemaining: number;
+  /** ISO timestamp when the local 14-day Pro trial ends. null = no trial. */
+  trialEndsAt: string | null;
+  /** True once the trial has been started (prevents re-offer). */
+  trialUsed: boolean;
   sessionStart: number;
   selectedTemplate: ShareTemplateId;
 
@@ -51,7 +55,8 @@ interface EndopathStore {
   closeCrossPromo: () => void;
 
   // Trial
-  incrementTrialEntries: () => boolean;
+  /** Begin the 14-day free Pro trial. No card required, no auto-conversion. */
+  startTrial: () => void;
   setPremium: (value: boolean) => void;
 
   // Profile
@@ -75,7 +80,8 @@ export const useStore = create<EndopathStore>((set, get) => ({
   paywallTrigger: null,
   showCrossPromo: false,
   isPremium: false,
-  trialEntriesRemaining: 10,
+  trialEndsAt: null,
+  trialUsed: false,
   sessionStart: 0,
   selectedTemplate: 'watercolor_rose',
 
@@ -131,11 +137,19 @@ export const useStore = create<EndopathStore>((set, get) => ({
     }
 
     const isAnnual = productId.includes('annual');
-    const price = isAnnual ? 70.0 : 6.99;
-    set({ isPremium: result.isPremium, showPaywall: false, paywallTrigger: null });
+    // Tracking price for analytics. Source-of-truth $ shown to the user
+    // comes from RevenueCat localised priceString in the paywall.
+    const priceAud = isAnnual ? 69.0 : 9.99;
+    set({
+      isPremium: result.isPremium,
+      // Subscribing ends any in-progress trial.
+      trialEndsAt: null,
+      showPaywall: false,
+      paywallTrigger: null,
+    });
     track('paywall_purchased', {
       product_id: productId,
-      price_usd: price,
+      price_aud: priceAud,
       paywall_type: 'revenuecat_ui',
       mock: !isBillingAvailable(),
     });
@@ -147,7 +161,7 @@ export const useStore = create<EndopathStore>((set, get) => ({
     track('paywall_restored', {});
     const result = await billingRestore();
     if (result.success && result.isPremium) {
-      set({ isPremium: true, showPaywall: false, paywallTrigger: null });
+      set({ isPremium: true, trialEndsAt: null, showPaywall: false, paywallTrigger: null });
       get().saveProfile();
     }
     return result;
@@ -164,11 +178,18 @@ export const useStore = create<EndopathStore>((set, get) => ({
   closeCrossPromo: () => set({ showCrossPromo: false, currentScreen: 'home' }),
 
   // --- Trial ---
-  incrementTrialEntries: () => {
-    const remaining = get().trialEntriesRemaining;
-    if (remaining <= 0) return false;
-    set({ trialEntriesRemaining: remaining - 1 });
-    return true;
+  startTrial: () => {
+    // Idempotent: once trial is used we never offer it again.
+    if (get().trialUsed) return;
+    const trialEndsAt = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString();
+    set({
+      trialEndsAt,
+      trialUsed: true,
+      showPaywall: false,
+      paywallTrigger: null,
+    });
+    track('trial_started', { duration_days: 14 });
+    get().saveProfile();
   },
 
   setPremium: (value) => set({ isPremium: value }),
@@ -181,13 +202,19 @@ export const useStore = create<EndopathStore>((set, get) => ({
       if (profile) {
         set({
           isPremium: profile.isPremium,
-          trialEntriesRemaining: profile.isPremium
-            ? Infinity
-            : Math.max(0, 10 - (profile.trialEntriesUsed || 0)),
+          trialEndsAt: profile.trialEndsAt ?? null,
+          trialUsed: profile.trialUsed ?? false,
         });
       }
     } catch {
       // No profile yet
+    }
+
+    // Expire trial if it's already past — keep state honest at every load.
+    const ends = get().trialEndsAt;
+    if (ends && new Date(ends).getTime() <= Date.now()) {
+      set({ trialEndsAt: null });
+      get().saveProfile();
     }
 
     // Reconcile entitlement with RevenueCat on app open — handles
@@ -200,9 +227,8 @@ export const useStore = create<EndopathStore>((set, get) => ({
         if (entitled !== current) {
           set({
             isPremium: entitled,
-            trialEntriesRemaining: entitled
-              ? Infinity
-              : Math.max(0, 10 - ((await getDB().userProfile.get('default'))?.trialEntriesUsed || 0)),
+            // A real entitlement supersedes any local trial.
+            trialEndsAt: entitled ? null : get().trialEndsAt,
           });
           get().saveProfile();
         }
@@ -226,8 +252,9 @@ export const useStore = create<EndopathStore>((set, get) => ({
       totalShareActions: existing?.totalShareActions || 0,
       floseedPortfolioApps: existing?.floseedPortfolioApps || [],
       onboardingCompleted: !state.isOnboarding,
-      trialEntriesUsed: existing?.trialEntriesUsed || 0,
-      currency: existing?.currency || 'USD',
+      trialEndsAt: state.trialEndsAt,
+      trialUsed: state.trialUsed,
+      currency: existing?.currency || 'AUD',
       locale: existing?.locale || 'en',
     };
     await db.userProfile.put(profile);
@@ -252,3 +279,38 @@ export const useStore = create<EndopathStore>((set, get) => ({
   // --- Shareable ---
   setTemplate: (id) => set({ selectedTemplate: id }),
 }));
+
+// ────────────────────────────────────────────────────────────
+// Pro / trial selectors
+//
+// Pro features are gated on **effective Pro** — true when the user is on a
+// paid plan OR within their 14-day free trial. Use these selectors in
+// components rather than reading isPremium/trialEndsAt directly so the
+// gating rules live in one place.
+// ────────────────────────────────────────────────────────────
+
+/** True iff the local trial is currently active (started, not yet expired). */
+export function isTrialActive(state: { trialEndsAt: string | null }): boolean {
+  if (!state.trialEndsAt) return false;
+  return new Date(state.trialEndsAt).getTime() > Date.now();
+}
+
+/** Effective Pro = real subscription OR active trial. Drives feature gating. */
+export function isEffectivePro(state: { isPremium: boolean; trialEndsAt: string | null }): boolean {
+  return state.isPremium || isTrialActive(state);
+}
+
+/** Convenience hook — returns effective Pro status as a reactive value. */
+export function useIsEffectivePro(): boolean {
+  return useStore((s) => isEffectivePro(s));
+}
+
+/** Days remaining in the trial, or null if no trial active. */
+export function useTrialDaysLeft(): number | null {
+  return useStore((s) => {
+    if (!isTrialActive(s)) return null;
+    const ms = new Date(s.trialEndsAt!).getTime() - Date.now();
+    return Math.max(0, Math.ceil(ms / (24 * 60 * 60 * 1000)));
+  });
+}
+

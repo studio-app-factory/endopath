@@ -38,13 +38,15 @@ Generate a comprehensive 4-week medical summary with pain logs, symptom frequenc
 
 ★ PRIVACY BY DESIGN
 • All data stored locally on your device
-• No cloud uploads. No data selling. No ads.
+• No cloud uploads. No data selling.
 • Encrypted at rest
 • No account required
 • Works fully offline
 
-★ PREMIUM (ONE-TIME UNLOCK)
-Free tier includes 10 entries. Premium unlocks unlimited tracking, clean share card exports (no watermark), all templates, and doctor PDF export. One payment, yours forever.
+★ ENDOPATH PRO
+Track for free — forever. Free includes the full body pain map, unlimited symptom and cycle logging, and a rolling 90-day history. Endopath Pro adds unlimited history, doctor-ready PDF exports, cycle and symptom correlation reports, cross-symptom analytics, data backup and restore, and an ad-free experience.
+
+$69 AUD/year or $9.99 AUD/month. Start with a 14-day free trial — no card required, no auto-conversion.
 
 ## pt_BR (Portuguese — Brazil)
 

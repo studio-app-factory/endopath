@@ -22,12 +22,15 @@ import { SHARE_TEMPLATES, TEMPLATE_CONFIGS } from '@/lib/templates';
 import { generateShareCard, prepareShareData } from '@/lib/shareable-generator';
 import type { ShareData } from '@/lib/shareable-generator';
 import { getFlareStats, getDB } from '@/lib/db';
-import { useStore } from '@/lib/store';
+import { useStore, useIsEffectivePro } from '@/lib/store';
 import { track } from '@/lib/analytics';
 import type { ShareSize } from '@/types';
 
 export function ShareableGenerator() {
-  const { isPremium, selectedTemplate, setTemplate } = useStore();
+  const selectedTemplate = useStore((s) => s.selectedTemplate);
+  const setTemplate = useStore((s) => s.setTemplate);
+  // Effective Pro = paid OR trial. Share-card export is a Pro feature.
+  const isPremium = useIsEffectivePro();
   const [selectedSize, setSelectedSize] = useState<ShareSize>('instagram_stories');
   const [generating, setGenerating] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);

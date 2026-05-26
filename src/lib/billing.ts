@@ -142,6 +142,29 @@ export async function purchaseProduct(productId: string): Promise<PurchaseResult
   }
 }
 
+/**
+ * Fetch localised price strings for the active offering. Returns a map keyed
+ * by RevenueCat product identifier. On web / no-key builds, returns {} so
+ * the paywall falls back to its hard-coded default strings.
+ */
+export async function getLocalisedPrices(): Promise<Record<string, string>> {
+  if (!isBillingAvailable()) return {};
+  try {
+    await initBilling();
+    const offerings = await Purchases.getOfferings();
+    const current = offerings.current;
+    if (!current) return {};
+    const map: Record<string, string> = {};
+    for (const pkg of current.availablePackages) {
+      map[pkg.product.identifier] = pkg.product.priceString;
+    }
+    return map;
+  } catch (e) {
+    console.warn('[billing] getLocalisedPrices failed', e);
+    return {};
+  }
+}
+
 /** Restore prior purchases (e.g. user reinstalled the app). */
 export async function restorePurchases(): Promise<PurchaseResult> {
   if (!isBillingAvailable()) {

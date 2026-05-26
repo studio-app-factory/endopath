@@ -16,12 +16,15 @@ import {
   Activity,
   ArrowRight,
 } from 'lucide-react';
-import { useStore } from '@/lib/store';
+import { useStore, useIsEffectivePro, useTrialDaysLeft } from '@/lib/store';
 import { getDB, getFlareStats } from '@/lib/db';
+import { freeWindowCutoffDate } from '@/lib/limits';
 import type { SymptomEntry } from '@/types';
 
 export function HomeScreen() {
-  const { setScreen, isPremium, trialEntriesRemaining } = useStore();
+  const setScreen = useStore((s) => s.setScreen);
+  const isEffectivePro = useIsEffectivePro();
+  const trialDaysLeft = useTrialDaysLeft();
   const [recentEntries, setRecentEntries] = useState<SymptomEntry[]>([]);
   const [flareCount, setFlareCount] = useState(0);
   const [todayPain, setTodayPain] = useState<number | null>(null);
@@ -29,14 +32,18 @@ export function HomeScreen() {
 
   useEffect(() => {
     loadDashboard();
-  }, []);
+    // Re-run when the Pro flag flips so the 90-day window
+    // updates without a full reload.
+  }, [isEffectivePro]);
 
   const loadDashboard = async () => {
     const db = getDB();
     const today = new Date().toISOString().split('T')[0];
+    const cutoff = isEffectivePro ? null : freeWindowCutoffDate();
 
-    // Recent entries
-    const entries = await db.symptomEntries.orderBy('timestamp').reverse().limit(5).toArray();
+    // Recent entries — free users see only entries within the 90-day window.
+    const allRecent = await db.symptomEntries.orderBy('timestamp').reverse().limit(5).toArray();
+    const entries = cutoff ? allRecent.filter((e) => e.date >= cutoff) : allRecent;
     setRecentEntries(entries);
 
     // Today's pain
@@ -301,21 +308,28 @@ export function HomeScreen() {
         )}
       </div>
 
-      {/* Free tier CTA */}
-      {!isPremium && (
+      {/* Tier CTA — only shown to free users; hidden on Pro and during active trial */}
+      {!isEffectivePro && (
         <div className="p-5 rounded-3xl bg-gradient-to-br from-[#C97D7D]/10 to-[#8B3D52]/8 border border-[#D89BA8]/15 text-center">
           <Sparkles className="w-5 h-5 text-[#8B3D52] mx-auto mb-2" strokeWidth={1.8} />
           <p className="text-sm text-[#3D1A24]/75 mb-2">
-            {trialEntriesRemaining > 0
-              ? `${trialEntriesRemaining} free entries remaining`
-              : 'Free trial complete'}
+            Unlock unlimited history, PDF exports, and pattern insights.
           </p>
           <button
             onClick={() => useStore.getState().triggerPaywall('settings_upgrade')}
             className="text-sm font-semibold bg-gradient-to-br from-[#C97D7D] to-[#8B3D52] bg-clip-text text-transparent hover:opacity-80 cursor-pointer inline-flex items-center gap-1"
           >
-            Unlock unlimited tracking <ArrowRight className="w-3.5 h-3.5 text-[#8B3D52]" />
+            See Endopath Pro <ArrowRight className="w-3.5 h-3.5 text-[#8B3D52]" />
           </button>
+        </div>
+      )}
+
+      {/* Trial banner — visible while trial is active */}
+      {!useStore.getState().isPremium && trialDaysLeft !== null && (
+        <div className="p-4 rounded-2xl bg-[#FFFAF5] border border-[#D89BA8]/30 text-center">
+          <p className="text-xs text-[#7A5560]">
+            Pro trial · <span className="text-[#8B3D52] font-semibold">{trialDaysLeft} {trialDaysLeft === 1 ? 'day' : 'days'} left</span>
+          </p>
         </div>
       )}
     </div>

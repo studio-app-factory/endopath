@@ -12,14 +12,17 @@ import {
   Heart,
   Sparkles,
 } from 'lucide-react';
-import { useStore } from '@/lib/store';
+import { useStore, useIsEffectivePro, useTrialDaysLeft } from '@/lib/store';
 import { Button } from '@/components/ui/Button';
 import { getDB, getEntriesInRange } from '@/lib/db';
 import { generateDoctorPDF } from '@/lib/pdf-export';
 import type { ExportConfig, ExportSection } from '@/types';
 
 export function SettingsScreen() {
-  const { isPremium, triggerPaywall } = useStore();
+  const isPremium = useStore((s) => s.isPremium);
+  const triggerPaywall = useStore((s) => s.triggerPaywall);
+  const isEffectivePro = useIsEffectivePro();
+  const trialDaysLeft = useTrialDaysLeft();
   const [showExport, setShowExport] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [exportStart, setExportStart] = useState(() => {
@@ -42,7 +45,8 @@ export function SettingsScreen() {
   };
 
   const handleExport = async () => {
-    if (!isPremium) {
+    // PDF export is a Pro-only feature. Trial users count as Pro.
+    if (!isEffectivePro) {
       triggerPaywall('share_export');
       return;
     }
@@ -107,7 +111,7 @@ export function SettingsScreen() {
         Settings
       </h2>
 
-      {/* Premium status */}
+      {/* Account / tier status */}
       <div className="p-5 rounded-3xl bg-[#FFFAF5] border border-[#E8D5CC]/70">
         <div className="flex items-center justify-between gap-4">
           <div className="min-w-0 flex-1">
@@ -115,14 +119,18 @@ export function SettingsScreen() {
             <p className="text-xs text-[#7A5560]/85 mt-0.5 inline-flex items-center gap-1.5">
               {isPremium ? (
                 <>
-                  <Sparkles className="w-3.5 h-3.5 text-[#8B3D52]" /> Premium Member
+                  <Sparkles className="w-3.5 h-3.5 text-[#8B3D52]" /> Endopath Pro
+                </>
+              ) : trialDaysLeft !== null ? (
+                <>
+                  <Sparkles className="w-3.5 h-3.5 text-[#8B3D52]" /> Trial · {trialDaysLeft} {trialDaysLeft === 1 ? 'day' : 'days'} left
                 </>
               ) : (
-                'Free Trial'
+                'Free'
               )}
             </p>
           </div>
-          {!isPremium && (
+          {!isEffectivePro && (
             <Button onClick={() => triggerPaywall('settings_upgrade')} size="sm">
               Upgrade
             </Button>

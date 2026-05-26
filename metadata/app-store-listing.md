@@ -53,8 +53,10 @@ Generate a comprehensive 4-week medical summary with pain logs, symptom frequenc
 **JOIN THE COMMUNITY**
 Share your anonymous flare pattern card using #endowarrior #endosisters #1in10. Connect with 190M+ people worldwide living with endometriosis.
 
-**PREMIUM (ONE-TIME UNLOCK)**
-Free tier includes 10 entries to try the full experience. Premium unlocks unlimited tracking, clean share card exports (no watermark), all templates, and doctor PDF export. One payment, yours forever.
+**ENDOPATH PRO**
+Track for free — forever. Free includes the full body pain map, unlimited symptom and cycle logging, and a rolling 90-day history. Endopath Pro adds unlimited history, doctor-ready PDF exports, cycle and symptom correlation reports, cross-symptom analytics, data backup and restore, and an ad-free experience.
+
+$69 AUD/year or $9.99 AUD/month. Start with a 14-day free trial — no card required, no auto-conversion.
 
 *Endopath is part of the Floseed family — privacy-first tools for chronic condition management.*
 
