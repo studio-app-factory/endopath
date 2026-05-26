@@ -1,5 +1,28 @@
 # Google Play Listing — Endopath
 
+## Data Safety form — answers
+
+Use these answers when filling Play Console → Data Safety.
+
+**Does your app collect or share any of the required user data types?** Yes (free tier only — see below).
+
+**Is all of the user data collected by your app encrypted in transit?** Yes (HTTPS).
+
+**Do you provide a way for users to request that their data be deleted?** Yes (Settings → Clear All Data; uninstalling the app also removes everything).
+
+### Data types
+
+| Data type | Collected? | Shared? | Optional? | Purpose | Notes |
+|---|---|---|---|---|---|
+| Health data (symptoms, pain, cycle, medications) | **No** | No | n/a | n/a | Stored only on-device in IndexedDB. Never leaves the user's device. |
+| User-provided notes / personal info | **No** | No | n/a | n/a | Same as above. |
+| Device or other IDs (Advertising ID, IDFA) | **Yes (free tier only, with consent)** | Yes (Google AdMob) | Yes | Advertising or marketing | Not collected for Pro / trial users. Not collected for free users until they tap Accept on the in-app consent dialog. |
+| IP address | **Yes (free tier only, with consent)** | Yes (Google AdMob) | Yes | Advertising or marketing | Used by AdMob for fraud prevention and approximate location. |
+| Approximate location | **Yes (free tier only, with consent — derived from IP by AdMob)** | Yes (Google AdMob) | Yes | Advertising or marketing | Derived from IP by AdMob; not collected by Endopath itself. |
+| Crash logs | **Yes** | Yes (Sentry) | No | App functionality, analytics | No health data. Screen name only. |
+| App interactions (analytics) | **Yes** | Yes (Mixpanel) | No | Analytics | Anonymous device ID, no IDFA, no health data. |
+| Purchase history | **Yes** | Yes (RevenueCat, Google Play) | No | App functionality | Subscription state only. |
+
 ## en (English)
 
 ### App Name (30 chars)

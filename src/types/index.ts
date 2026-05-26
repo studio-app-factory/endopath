@@ -18,9 +18,17 @@ export interface UserProfile {
   trialEndsAt: string | null;
   /** True once the trial has been started — used to prevent re-offering. */
   trialUsed: boolean;
+  /**
+   * Ads consent state. Default 'unknown' until the user has answered the
+   * consent dialog. The ad SDK is never initialised unless this === 'accepted'
+   * AND the user is on the free tier.
+   */
+  adsConsent: AdsConsent;
   currency: CurrencyCode;
   locale: LocaleCode;
 }
+
+export type AdsConsent = 'unknown' | 'accepted' | 'rejected';
 
 export type CurrencyCode = 'USD' | 'AUD' | 'BRL' | 'EUR' | 'GBP';
 export type LocaleCode = 'en' | 'pt_BR' | 'es' | 'de';
@@ -251,6 +259,8 @@ export type PortfolioEvent =
   | 'paywall_dismissed'
   | 'paywall_restored'
   | 'trial_started'
+  | 'ads_consent_accepted'
+  | 'ads_consent_rejected'
   | 'session_started'
   | 'session_ended'
   | 'shareable_generated'

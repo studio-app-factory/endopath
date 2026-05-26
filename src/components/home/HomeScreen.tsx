@@ -19,6 +19,7 @@ import {
 import { useStore, useIsEffectivePro, useTrialDaysLeft } from '@/lib/store';
 import { getDB, getFlareStats } from '@/lib/db';
 import { freeWindowCutoffDate } from '@/lib/limits';
+import { AdBanner } from '@/components/ads/AdBanner';
 import type { SymptomEntry } from '@/types';
 
 export function HomeScreen() {
@@ -332,6 +333,9 @@ export function HomeScreen() {
           </p>
         </div>
       )}
+
+      {/* Banner ad slot — free tier only, gated inside AdBanner */}
+      <AdBanner />
     </div>
   );
 }
