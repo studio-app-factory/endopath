@@ -6,6 +6,7 @@
 import { useEffect } from 'react';
 import { useStore } from '@/lib/store';
 import { track, newSession } from '@/lib/analytics';
+import { initBilling } from '@/lib/billing';
 import { OnboardingFlow } from '@/components/onboarding/OnboardingFlow';
 import { HomeScreen } from '@/components/home/HomeScreen';
 import { LogEntry } from '@/components/tracking/LogEntry';
@@ -57,7 +58,11 @@ export default function App() {
 
     localStorage.setItem('endopath_session_count', String(sessionCount + 1));
 
-    loadProfile();
+    // Kick off billing init (no-op on web / no-key builds) before
+    // loadProfile, so loadProfile's entitlement reconciliation can use it.
+    initBilling().finally(() => {
+      loadProfile();
+    });
     startSession();
     newSession();
 

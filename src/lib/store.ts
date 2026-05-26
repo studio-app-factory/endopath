@@ -11,6 +11,13 @@ import type {
 } from '@/types';
 import { getDB } from './db';
 import { track } from './analytics';
+import {
+  initBilling,
+  isBillingAvailable,
+  checkEntitlement,
+  purchaseProduct,
+  restorePurchases as billingRestore,
+} from './billing';
 
 interface EndopathStore {
   // State
@@ -36,8 +43,8 @@ interface EndopathStore {
   // Paywall
   triggerPaywall: (trigger: PaywallTrigger) => void;
   dismissPaywall: () => void;
-  completePurchase: (productId: string) => void;
-  restorePurchases: () => void;
+  completePurchase: (productId: string) => Promise<{ success: boolean; userCancelled?: boolean; error?: string }>;
+  restorePurchases: () => Promise<{ success: boolean; isPremium: boolean; error?: string }>;
 
   // Cross-promo
   openCrossPromo: () => void;
@@ -110,21 +117,40 @@ export const useStore = create<EndopathStore>((set, get) => ({
     }
   },
 
-  completePurchase: (productId) => {
+  completePurchase: async (productId) => {
+    const result = await purchaseProduct(productId);
+    if (result.userCancelled) {
+      return { success: false, userCancelled: true };
+    }
+    if (!result.success) {
+      track('paywall_purchase_failed', {
+        product_id: productId,
+        error: result.error || 'unknown',
+      });
+      return { success: false, error: result.error };
+    }
+
     const isAnnual = productId.includes('annual');
     const price = isAnnual ? 70.0 : 6.99;
-    set({ isPremium: true, showPaywall: false, paywallTrigger: null });
+    set({ isPremium: result.isPremium, showPaywall: false, paywallTrigger: null });
     track('paywall_purchased', {
       product_id: productId,
       price_usd: price,
       paywall_type: 'revenuecat_ui',
+      mock: !isBillingAvailable(),
     });
     get().saveProfile();
+    return { success: true };
   },
 
-  restorePurchases: () => {
+  restorePurchases: async () => {
     track('paywall_restored', {});
-    // In production: RevenueCat.restorePurchases()
+    const result = await billingRestore();
+    if (result.success && result.isPremium) {
+      set({ isPremium: true, showPaywall: false, paywallTrigger: null });
+      get().saveProfile();
+    }
+    return result;
   },
 
   // --- Cross-promo ---
@@ -162,6 +188,27 @@ export const useStore = create<EndopathStore>((set, get) => ({
       }
     } catch {
       // No profile yet
+    }
+
+    // Reconcile entitlement with RevenueCat on app open — handles
+    // cross-device restores, refunds, and subscription expiry.
+    if (isBillingAvailable()) {
+      try {
+        await initBilling();
+        const entitled = await checkEntitlement();
+        const current = get().isPremium;
+        if (entitled !== current) {
+          set({
+            isPremium: entitled,
+            trialEntriesRemaining: entitled
+              ? Infinity
+              : Math.max(0, 10 - ((await getDB().userProfile.get('default'))?.trialEntriesUsed || 0)),
+          });
+          get().saveProfile();
+        }
+      } catch (e) {
+        console.warn('[store] entitlement reconcile failed', e);
+      }
     }
   },
 
