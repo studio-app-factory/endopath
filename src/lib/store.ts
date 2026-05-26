@@ -111,9 +111,8 @@ export const useStore = create<EndopathStore>((set, get) => ({
   },
 
   completePurchase: (productId) => {
-    const isUpgrade = productId.includes('lifetime_upgrade');
-    const isLifetime = productId.includes('lifetime');
-    const price = isUpgrade ? 19.99 : isLifetime ? 9.99 : 4.99;
+    const isAnnual = productId.includes('annual');
+    const price = isAnnual ? 70.0 : 6.99;
     set({ isPremium: true, showPaywall: false, paywallTrigger: null });
     track('paywall_purchased', {
       product_id: productId,

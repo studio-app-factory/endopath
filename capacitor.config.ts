@@ -7,16 +7,16 @@ const config: CapacitorConfig = {
   bundledWebRuntime: false,
   ios: {
     contentInset: 'always',
-    backgroundColor: '#1A0E13'
+    backgroundColor: '#FAF5F0'
   },
   android: {
-    backgroundColor: '#1A0E13'
+    backgroundColor: '#FAF5F0'
   },
   plugins: {
     SplashScreen: {
       launchShowDuration: 2000,
       launchAutoHide: true,
-      backgroundColor: '#1A0E13',
+      backgroundColor: '#FAF5F0',
       androidSplashResourceName: 'splash',
       androidScaleType: 'CENTER_CROP',
       showSpinner: false,
@@ -24,13 +24,13 @@ const config: CapacitorConfig = {
       splashImmersive: true
     },
     StatusBar: {
-      style: 'LIGHT',
-      backgroundColor: '#1A0E13',
+      style: 'DARK',
+      backgroundColor: '#FAF5F0',
       overlaysWebView: false
     },
     Keyboard: {
       resize: 'body',
-      style: 'DARK',
+      style: 'LIGHT',
       resizeOnFullScreen: true
     }
   }

@@ -30,7 +30,7 @@ export default function App() {
 
   // Initialize app
   useEffect(() => {
-    document.body.style.backgroundColor = '#1A0E13';
+    document.body.style.backgroundColor = '#FAF5F0';
 
     let isFirstOpen = false;
     const openedBefore = localStorage.getItem('endopath_opened');
@@ -132,7 +132,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#1A0E13] text-white font-['Inter',system-ui,sans-serif]">
+    <div className="min-h-screen bg-[#FAF5F0] text-[#3D1A24] font-['Inter',system-ui,sans-serif]">
       {/* Screen content */}
       <div className="animate-in fade-in duration-300">{renderScreen()}</div>
 

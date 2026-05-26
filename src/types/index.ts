@@ -208,7 +208,7 @@ export interface PaywallProduct {
   price: number;
   currency: CurrencyCode;
   formattedPrice: string;
-  type: 'lifetime' | 'weekly' | 'lifetime_upgrade';
+  type: 'annual' | 'monthly';
   entitlement: 'premium';
 }
 

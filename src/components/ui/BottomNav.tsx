@@ -20,7 +20,7 @@ export function BottomNav() {
   if (isOnboarding || showPaywall || showCrossPromo) return null;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-[#1A0E13]/95 backdrop-blur-xl border-t border-white/8 pb-safe">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-[#FAF5F0]/95 backdrop-blur-xl border-t border-[#E8D5CC]/70 pb-safe">
       <div className="max-w-lg mx-auto flex items-center justify-around px-2">
         {NAV_ITEMS.map((item) => {
           const Icon = item.icon;
@@ -35,8 +35,8 @@ export function BottomNav() {
               onClick={() => setScreen(item.screen)}
               className={`flex flex-col items-center gap-1 py-3 px-3 min-w-[60px] transition-colors cursor-pointer ${
                 isActive
-                  ? 'text-rose-400'
-                  : 'text-white/30 hover:text-white/55'
+                  ? 'text-[#8B3D52]'
+                  : 'text-[#A88894]/70 hover:text-[#7A5560]/85'
               }`}
             >
               <Icon className="w-5 h-5" strokeWidth={isActive ? 2.5 : 2} />

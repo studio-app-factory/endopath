@@ -16,18 +16,18 @@ export function Button({
   return (
     <button
       className={cn(
-        'inline-flex items-center justify-center rounded-2xl font-semibold transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-400/40 disabled:opacity-40 disabled:pointer-events-none cursor-pointer',
+        'inline-flex items-center justify-center rounded-2xl font-semibold transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C97D7D]/40 disabled:opacity-40 disabled:pointer-events-none cursor-pointer',
         {
           primary:
-            'bg-gradient-to-br from-rose-400 to-amber-400 text-[#1A0E13] shadow-lg shadow-rose-400/30 hover:shadow-xl hover:shadow-rose-400/40 hover:-translate-y-0.5 active:translate-y-0',
+            'bg-gradient-to-br from-[#C97D7D] to-[#8B3D52] text-[#FFFAF5] shadow-lg shadow-[#C97D7D]/20 hover:shadow-xl hover:shadow-[#C97D7D]/30 hover:-translate-y-0.5 active:translate-y-0',
           secondary:
-            'bg-white/8 text-white hover:bg-white/12 border border-white/10',
+            'bg-[#3D1A24]/6 text-[#3D1A24] hover:bg-[#3D1A24]/8 border border-[#E8D5CC]',
           ghost:
-            'text-white/65 hover:bg-white/6 hover:text-white',
+            'text-[#7A5560] hover:bg-[#3D1A24]/5 hover:text-[#3D1A24]',
           outline:
-            'border border-white/15 text-white/85 hover:bg-white/6',
+            'border border-[#E8D5CC] text-[#3D1A24]/85 hover:bg-[#3D1A24]/5',
           danger:
-            'bg-gradient-to-br from-rose-500 to-red-600 text-white shadow-lg shadow-rose-500/30 hover:shadow-xl hover:shadow-rose-500/40',
+            'bg-gradient-to-br from-[#8B3D52] to-[#6B2939] text-[#FFFAF5] shadow-lg shadow-[#8B3D52]/20 hover:shadow-xl hover:shadow-[#8B3D52]/25',
         }[variant],
         {
           sm: 'px-3.5 py-2 text-sm gap-1.5',

@@ -193,16 +193,16 @@ export function LogEntry() {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-8">
         <div className="relative mb-6">
-          <div className="absolute top-1/2 left-1/2 w-40 h-40 -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl bg-gradient-to-br from-rose-400/55 to-amber-400/40 animate-halo" />
-          <div className="relative w-20 h-20 rounded-3xl bg-gradient-to-br from-rose-400 to-amber-400 flex items-center justify-center shadow-2xl shadow-rose-400/45">
-            <Heart className="w-9 h-9 text-[#1A0E13]" fill="currentColor" strokeWidth={0} />
+          <div className="absolute top-1/2 left-1/2 w-40 h-40 -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl bg-gradient-to-br from-[#C97D7D]/55 to-[#8B3D52]/40 animate-halo" />
+          <div className="relative w-20 h-20 rounded-3xl bg-gradient-to-br from-[#C97D7D] to-[#8B3D52] flex items-center justify-center shadow-2xl shadow-[#C97D7D]/35">
+            <Heart className="w-9 h-9 text-[#FFFAF5]" fill="currentColor" strokeWidth={0} />
           </div>
         </div>
-        <h2 className="text-3xl font-semibold text-white font-['Cormorant_Garamond'] mb-2">
+        <h2 className="text-3xl font-semibold text-[#3D1A24] font-['Cormorant_Garamond'] mb-2">
           Entry Saved
         </h2>
-        <p className="text-white/55">
-          <Face className="inline w-4 h-4 mr-1.5 text-rose-300 align-text-bottom" />
+        <p className="text-[#7A5560]/85">
+          <Face className="inline w-4 h-4 mr-1.5 text-[#8B3D52] align-text-bottom" />
           Held safely. Only on your device.
         </p>
       </div>
@@ -215,11 +215,11 @@ export function LogEntry() {
     <div className="space-y-5 pb-8 max-w-lg mx-auto">
       {/* Header */}
       <div className="text-center space-y-2">
-        <h2 className="text-3xl font-semibold text-white font-['Cormorant_Garamond'] tracking-tight">
+        <h2 className="text-3xl font-semibold text-[#3D1A24] font-['Cormorant_Garamond'] tracking-tight">
           Log Your Symptoms
         </h2>
         {!isPremium && (
-          <p className="text-xs text-white/45">
+          <p className="text-xs text-[#A88894]">
             {trialEntriesRemaining} free{' '}
             {trialEntriesRemaining === 1 ? 'entry' : 'entries'} remaining
           </p>
@@ -227,15 +227,15 @@ export function LogEntry() {
       </div>
 
       {/* Pain Level */}
-      <div className="bg-white/4 rounded-3xl p-5 border border-white/8">
+      <div className="bg-[#FFFAF5] rounded-3xl p-5 border border-[#E8D5CC]/70">
         <div className="flex items-center justify-between mb-3">
-          <p className="text-sm font-medium text-white/85">Pain Level</p>
-          <span className="text-[10px] font-mono text-white/45 uppercase tracking-wider">
+          <p className="text-sm font-medium text-[#3D1A24]/85">Pain Level</p>
+          <span className="text-[10px] font-mono text-[#A88894] uppercase tracking-wider">
             0–10 scale
           </span>
         </div>
         <div className="flex items-center gap-4 mb-2">
-          <Face className="w-7 h-7 text-rose-300" strokeWidth={1.7} />
+          <Face className="w-7 h-7 text-[#8B3D52]" strokeWidth={1.7} />
           <input
             type="range"
             min="1"
@@ -244,11 +244,11 @@ export function LogEntry() {
             onChange={(e) => setPainLevel(Number(e.target.value))}
             className="flex-1"
           />
-          <span className="text-2xl font-bold bg-gradient-to-br from-rose-400 to-amber-400 bg-clip-text text-transparent w-8 text-center font-['Cormorant_Garamond']">
+          <span className="text-2xl font-bold bg-gradient-to-br from-[#C97D7D] to-[#8B3D52] bg-clip-text text-transparent w-8 text-center font-['Cormorant_Garamond']">
             {painLevel}
           </span>
         </div>
-        <div className="flex justify-between text-[10px] text-white/40 px-1 uppercase tracking-wider">
+        <div className="flex justify-between text-[10px] text-[#A88894]/75 px-1 uppercase tracking-wider">
           <span>Mild</span>
           <span>Moderate</span>
           <span>Severe</span>
@@ -258,8 +258,8 @@ export function LogEntry() {
       {/* Body Pain Map */}
       <div>
         <div className="flex items-center gap-2 mb-2 px-1">
-          <MapPin className="w-4 h-4 text-rose-300" strokeWidth={1.8} />
-          <p className="text-sm font-medium text-white/85">Pain Locations</p>
+          <MapPin className="w-4 h-4 text-[#8B3D52]" strokeWidth={1.8} />
+          <p className="text-sm font-medium text-[#3D1A24]/85">Pain Locations</p>
         </div>
         <BodyPainMap
           locations={painLocations}
@@ -270,15 +270,15 @@ export function LogEntry() {
           height={400}
         />
         {painLocations.length > 0 && (
-          <p className="text-xs text-white/55 text-center mt-2">
+          <p className="text-xs text-[#7A5560]/85 text-center mt-2">
             {painLocations.length} location{painLocations.length > 1 ? 's' : ''} logged
           </p>
         )}
       </div>
 
       {/* Symptoms */}
-      <div className="bg-white/4 rounded-3xl p-5 border border-white/8">
-        <p className="text-sm font-medium text-white/85 mb-3">Symptoms</p>
+      <div className="bg-[#FFFAF5] rounded-3xl p-5 border border-[#E8D5CC]/70">
+        <p className="text-sm font-medium text-[#3D1A24]/85 mb-3">Symptoms</p>
         <div className="flex flex-wrap gap-2">
           {SYMPTOMS.map((sym) => {
             const SymIcon = sym.icon;
@@ -289,8 +289,8 @@ export function LogEntry() {
                 onClick={() => toggleSymptom(sym.id)}
                 className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-medium transition-all cursor-pointer ${
                   active
-                    ? 'bg-gradient-to-br from-rose-400 to-amber-400 text-[#1A0E13] shadow-md shadow-rose-400/30'
-                    : 'bg-white/6 text-white/65 border border-white/8 hover:bg-white/10'
+                    ? 'bg-gradient-to-br from-[#C97D7D] to-[#8B3D52] text-[#FFFAF5] shadow-md shadow-[#C97D7D]/20'
+                    : 'bg-[#3D1A24]/5 text-[#7A5560] border border-[#E8D5CC]/70 hover:bg-[#3D1A24]/7'
                 }`}
               >
                 <SymIcon className="w-3.5 h-3.5" strokeWidth={2} />
@@ -302,19 +302,19 @@ export function LogEntry() {
       </div>
 
       {/* Bleeding & Cycle */}
-      <div className="bg-white/4 rounded-3xl p-5 border border-white/8 space-y-4">
+      <div className="bg-[#FFFAF5] rounded-3xl p-5 border border-[#E8D5CC]/70 space-y-4">
         <div className="flex items-center justify-between">
-          <p className="text-sm font-medium text-white/85">Currently Bleeding</p>
+          <p className="text-sm font-medium text-[#3D1A24]/85">Currently Bleeding</p>
           <button
             onClick={() => setIsBleeding(!isBleeding)}
             className={`w-12 h-7 rounded-full transition-colors cursor-pointer relative ${
               isBleeding
-                ? 'bg-gradient-to-r from-rose-400 to-amber-400 shadow-md shadow-rose-400/30'
-                : 'bg-white/10'
+                ? 'bg-gradient-to-r from-[#C97D7D] to-[#8B3D52] shadow-md shadow-[#C97D7D]/20'
+                : 'bg-[#3D1A24]/7'
             }`}
           >
             <div
-              className={`w-5 h-5 rounded-full bg-white shadow-sm absolute top-1 transition-all ${
+              className={`w-5 h-5 rounded-full bg-[#FFFAF5] shadow-sm absolute top-1 transition-all ${
                 isBleeding ? 'left-6' : 'left-1'
               }`}
             />
@@ -329,8 +329,8 @@ export function LogEntry() {
                 onClick={() => setFlowLevel(fl.id)}
                 className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
                   flowLevel === fl.id
-                    ? 'bg-gradient-to-br from-rose-400 to-amber-400 text-[#1A0E13]'
-                    : 'bg-white/6 text-white/65 border border-white/8 hover:bg-white/10'
+                    ? 'bg-gradient-to-br from-[#C97D7D] to-[#8B3D52] text-[#FFFAF5]'
+                    : 'bg-[#3D1A24]/5 text-[#7A5560] border border-[#E8D5CC]/70 hover:bg-[#3D1A24]/7'
                 }`}
               >
                 {fl.label}
@@ -340,7 +340,7 @@ export function LogEntry() {
         )}
 
         <div>
-          <p className="text-sm font-medium text-white/85 mb-2">Cycle Phase</p>
+          <p className="text-sm font-medium text-[#3D1A24]/85 mb-2">Cycle Phase</p>
           <div className="flex gap-2 flex-wrap">
             {CYCLE_PHASES.map((ph) => (
               <button
@@ -348,8 +348,8 @@ export function LogEntry() {
                 onClick={() => setCyclePhase(ph.id)}
                 className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
                   cyclePhase === ph.id
-                    ? 'bg-gradient-to-br from-violet-400 to-fuchsia-400 text-[#1A0E13]'
-                    : 'bg-white/6 text-white/65 border border-white/8 hover:bg-white/10'
+                    ? 'bg-gradient-to-br from-[#A88894] to-[#8B3D52] text-[#FFFAF5]'
+                    : 'bg-[#3D1A24]/5 text-[#7A5560] border border-[#E8D5CC]/70 hover:bg-[#3D1A24]/7'
                 }`}
               >
                 {ph.label}
@@ -360,14 +360,14 @@ export function LogEntry() {
       </div>
 
       {/* Sleep */}
-      <div className="bg-white/4 rounded-3xl p-5 border border-white/8 space-y-3">
+      <div className="bg-[#FFFAF5] rounded-3xl p-5 border border-[#E8D5CC]/70 space-y-3">
         <div className="flex items-center gap-2">
-          <Moon className="w-4 h-4 text-violet-300" strokeWidth={1.8} />
-          <p className="text-sm font-medium text-white/85">Sleep</p>
+          <Moon className="w-4 h-4 text-[#A88894]" strokeWidth={1.8} />
+          <p className="text-sm font-medium text-[#3D1A24]/85">Sleep</p>
         </div>
         <div className="flex gap-4 items-end">
           <div className="flex-1">
-            <label className="text-xs text-white/50 mb-1 block">Hours</label>
+            <label className="text-xs text-[#7A5560]/80 mb-1 block">Hours</label>
             <input
               type="number"
               min="0"
@@ -378,11 +378,11 @@ export function LogEntry() {
                 setSleepHours(e.target.value ? Number(e.target.value) : undefined)
               }
               placeholder="7.5"
-              className="w-full px-3 py-2.5 rounded-xl border border-white/10 text-sm text-white bg-white/6 placeholder:text-white/30 focus:outline-none focus:border-rose-400/50"
+              className="w-full px-3 py-2.5 rounded-xl border border-[#E8D5CC] text-sm text-[#3D1A24] bg-[#3D1A24]/5 placeholder:text-[#A88894]/70 focus:outline-none focus:border-[#C97D7D]/50"
             />
           </div>
           <div className="flex-1">
-            <label className="text-xs text-white/50 mb-1 block">Quality (1–5)</label>
+            <label className="text-xs text-[#7A5560]/80 mb-1 block">Quality (1–5)</label>
             <div className="flex gap-1">
               {[1, 2, 3, 4, 5].map((q) => (
                 <button
@@ -390,8 +390,8 @@ export function LogEntry() {
                   onClick={() => setSleepQuality(q as 1 | 2 | 3 | 4 | 5)}
                   className={`w-9 h-9 rounded-lg text-sm font-semibold transition-all cursor-pointer ${
                     sleepQuality === q
-                      ? 'bg-gradient-to-br from-rose-400 to-amber-400 text-[#1A0E13]'
-                      : 'bg-white/6 text-white/55 border border-white/8 hover:bg-white/10'
+                      ? 'bg-gradient-to-br from-[#C97D7D] to-[#8B3D52] text-[#FFFAF5]'
+                      : 'bg-[#3D1A24]/5 text-[#7A5560]/85 border border-[#E8D5CC]/70 hover:bg-[#3D1A24]/7'
                   }`}
                 >
                   {q}
@@ -403,19 +403,19 @@ export function LogEntry() {
       </div>
 
       {/* Intercourse Pain */}
-      <div className="bg-white/4 rounded-3xl p-5 border border-white/8 space-y-3">
+      <div className="bg-[#FFFAF5] rounded-3xl p-5 border border-[#E8D5CC]/70 space-y-3">
         <div className="flex items-center justify-between">
-          <p className="text-sm font-medium text-white/85">Intercourse Pain</p>
+          <p className="text-sm font-medium text-[#3D1A24]/85">Intercourse Pain</p>
           <button
             onClick={() => setIntercoursePain(!intercoursePain)}
             className={`w-12 h-7 rounded-full transition-colors cursor-pointer relative ${
               intercoursePain
-                ? 'bg-gradient-to-r from-rose-400 to-amber-400 shadow-md shadow-rose-400/30'
-                : 'bg-white/10'
+                ? 'bg-gradient-to-r from-[#C97D7D] to-[#8B3D52] shadow-md shadow-[#C97D7D]/20'
+                : 'bg-[#3D1A24]/7'
             }`}
           >
             <div
-              className={`w-5 h-5 rounded-full bg-white shadow-sm absolute top-1 transition-all ${
+              className={`w-5 h-5 rounded-full bg-[#FFFAF5] shadow-sm absolute top-1 transition-all ${
                 intercoursePain ? 'left-6' : 'left-1'
               }`}
             />
@@ -423,7 +423,7 @@ export function LogEntry() {
         </div>
         {intercoursePain && (
           <div>
-            <label className="text-xs text-white/55 mb-1 block">Pain Level (1–10)</label>
+            <label className="text-xs text-[#7A5560]/85 mb-1 block">Pain Level (1–10)</label>
             <input
               type="range"
               min="1"
@@ -432,7 +432,7 @@ export function LogEntry() {
               onChange={(e) => setIntercoursePainLevel(Number(e.target.value))}
               className="w-full"
             />
-            <div className="text-center text-lg font-bold text-rose-300 mt-1 font-['Cormorant_Garamond']">
+            <div className="text-center text-lg font-bold text-[#8B3D52] mt-1 font-['Cormorant_Garamond']">
               {intercoursePainLevel ?? 5}
             </div>
           </div>
@@ -440,14 +440,14 @@ export function LogEntry() {
       </div>
 
       {/* Notes */}
-      <div className="bg-white/4 rounded-3xl p-5 border border-white/8">
-        <p className="text-sm font-medium text-white/85 mb-2">Notes</p>
+      <div className="bg-[#FFFAF5] rounded-3xl p-5 border border-[#E8D5CC]/70">
+        <p className="text-sm font-medium text-[#3D1A24]/85 mb-2">Notes</p>
         <textarea
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           placeholder="Anything else? Diet, weather, triggers..."
           rows={3}
-          className="w-full px-3 py-2.5 rounded-xl border border-white/10 text-sm text-white bg-white/6 placeholder:text-white/30 focus:outline-none focus:border-rose-400/50 resize-none"
+          className="w-full px-3 py-2.5 rounded-xl border border-[#E8D5CC] text-sm text-[#3D1A24] bg-[#3D1A24]/5 placeholder:text-[#A88894]/70 focus:outline-none focus:border-[#C97D7D]/50 resize-none"
         />
       </div>
 
