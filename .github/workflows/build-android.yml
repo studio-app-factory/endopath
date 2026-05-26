@@ -29,10 +29,10 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      - name: Set up Java 17
+      - name: Set up Java 21
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'temurin'
 
       - name: Set up Android SDK
@@ -45,12 +45,12 @@ jobs:
         run: |
           if ! grep -q '"@capacitor/android"' package.json; then
             npm install \
-              @capacitor/core@^6 \
-              @capacitor/cli@^6 \
-              @capacitor/android@^6 \
-              @capacitor/splash-screen@^6 \
-              @capacitor/status-bar@^6 \
-              @capacitor/keyboard@^6 \
+              @capacitor/core@^8 \
+              @capacitor/cli@^8 \
+              @capacitor/android@^8 \
+              @capacitor/splash-screen@^8 \
+              @capacitor/status-bar@^8 \
+              @capacitor/keyboard@^8 \
               @capacitor/assets@^3
           fi
 

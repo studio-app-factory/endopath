@@ -32,12 +32,12 @@ jobs:
         run: |
           if ! grep -q '"@capacitor/ios"' package.json; then
             npm install \
-              @capacitor/core@^6 \
-              @capacitor/cli@^6 \
-              @capacitor/ios@^6 \
-              @capacitor/splash-screen@^6 \
-              @capacitor/status-bar@^6 \
-              @capacitor/keyboard@^6 \
+              @capacitor/core@^8 \
+              @capacitor/cli@^8 \
+              @capacitor/ios@^8 \
+              @capacitor/splash-screen@^8 \
+              @capacitor/status-bar@^8 \
+              @capacitor/keyboard@^8 \
               @capacitor/assets@^3
           fi
 
