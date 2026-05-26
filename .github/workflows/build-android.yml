@@ -69,10 +69,13 @@ jobs:
         run: npx cap sync android
 
       - name: Inject AdMob app ID into AndroidManifest.xml
-        if: ${{ secrets.ADMOB_APP_ID_ANDROID != '' }}
         env:
           ADMOB_APP_ID: ${{ secrets.ADMOB_APP_ID_ANDROID }}
         run: |
+          if [ -z "$ADMOB_APP_ID" ]; then
+            echo "ADMOB_APP_ID_ANDROID secret not set — skipping AdMob meta-data injection (banner will use Google test ID at runtime)"
+            exit 0
+          fi
           python3 << 'PYTHON'
           import os, re
           path = 'android/app/src/main/AndroidManifest.xml'
