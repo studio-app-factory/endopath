@@ -134,10 +134,10 @@ export function ShareableGenerator() {
   if (!shareData) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
-        <div className="w-16 h-16 rounded-3xl bg-gradient-to-br from-rose-400/20 to-amber-400/20 border border-rose-300/15 flex items-center justify-center mb-4">
-          <Loader2 className="w-7 h-7 text-rose-300 animate-spin" strokeWidth={1.8} />
+        <div className="w-16 h-16 rounded-3xl bg-gradient-to-br from-[#C97D7D]/20 to-[#8B3D52]/20 border border-[#D89BA8]/15 flex items-center justify-center mb-4">
+          <Loader2 className="w-7 h-7 text-[#8B3D52] animate-spin" strokeWidth={1.8} />
         </div>
-        <p className="text-white/55">Loading your flare data...</p>
+        <p className="text-[#7A5560]/85">Loading your flare data...</p>
       </div>
     );
   }
@@ -146,10 +146,10 @@ export function ShareableGenerator() {
     <div className="space-y-6 pb-8">
       {/* Header */}
       <div className="text-center space-y-1">
-        <h2 className="text-3xl font-semibold text-white font-['Cormorant_Garamond'] tracking-tight">
+        <h2 className="text-3xl font-semibold text-[#3D1A24] font-['Cormorant_Garamond'] tracking-tight">
           Your Flare Pattern
         </h2>
-        <p className="text-sm text-white/55">
+        <p className="text-sm text-[#7A5560]/85">
           {shareData.entriesCount === 0
             ? 'Start logging to generate your shareable infographic'
             : `${shareData.daysTracked} days tracked · ${shareData.totalFlares} flares`}
@@ -164,8 +164,8 @@ export function ShareableGenerator() {
             onClick={() => setTimeRange(m)}
             className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all cursor-pointer ${
               timeRange === m
-                ? 'bg-gradient-to-br from-rose-400 to-amber-400 text-[#1A0E13] shadow-md shadow-rose-400/30'
-                : 'bg-white/6 text-white/65 border border-white/8 hover:bg-white/10'
+                ? 'bg-gradient-to-br from-[#C97D7D] to-[#8B3D52] text-[#FFFAF5] shadow-md shadow-[#C97D7D]/20'
+                : 'bg-[#3D1A24]/5 text-[#7A5560] border border-[#E8D5CC]/70 hover:bg-[#3D1A24]/7'
             }`}
           >
             {m === 1 ? '1mo' : `${m}mo`}
@@ -175,7 +175,7 @@ export function ShareableGenerator() {
 
       {/* Template picker */}
       <div>
-        <p className="text-[10px] font-medium text-white/45 uppercase tracking-[0.18em] mb-3 text-center">
+        <p className="text-[10px] font-medium text-[#A88894] uppercase tracking-[0.18em] mb-3 text-center">
           Template
         </p>
         <div className="flex justify-center gap-3 flex-wrap">
@@ -191,8 +191,8 @@ export function ShareableGenerator() {
               }}
               className={`relative p-3 rounded-2xl border-2 transition-all cursor-pointer ${
                 selectedTemplate === tpl.id
-                  ? 'border-rose-400 bg-white/4 shadow-md shadow-rose-400/15'
-                  : 'border-white/8 bg-white/4 hover:border-white/15'
+                  ? 'border-[#C97D7D] bg-[#FFFAF5] shadow-md shadow-[#C97D7D]/12'
+                  : 'border-[#E8D5CC]/70 bg-[#FFFAF5] hover:border-[#E8D5CC]'
               }`}
             >
               <div
@@ -205,12 +205,12 @@ export function ShareableGenerator() {
               >
                 {tpl.name.split(' ')[0]}
               </div>
-              <p className="text-[10px] text-white/55 mt-1.5 text-center max-w-[80px] truncate">
+              <p className="text-[10px] text-[#7A5560]/85 mt-1.5 text-center max-w-[80px] truncate">
                 {tpl.name}
               </p>
               {tpl.isPremium && !isPremium && (
-                <div className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-gradient-to-br from-rose-400 to-amber-400 rounded-full flex items-center justify-center shadow-md shadow-rose-400/35">
-                  <Lock className="w-2.5 h-2.5 text-[#1A0E13]" strokeWidth={3} />
+                <div className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-gradient-to-br from-[#C97D7D] to-[#8B3D52] rounded-full flex items-center justify-center shadow-md shadow-[#C97D7D]/25">
+                  <Lock className="w-2.5 h-2.5 text-[#FFFAF5]" strokeWidth={3} />
                 </div>
               )}
             </button>
@@ -228,8 +228,8 @@ export function ShareableGenerator() {
               onClick={() => setSelectedSize(sz.id)}
               className={`px-4 py-2 rounded-xl text-sm font-medium transition-all flex items-center gap-2 cursor-pointer ${
                 selectedSize === sz.id
-                  ? 'bg-white/8 text-white border border-rose-400'
-                  : 'bg-white/4 text-white/55 border border-white/8 hover:border-white/15'
+                  ? 'bg-[#3D1A24]/6 text-[#3D1A24] border border-[#C97D7D]'
+                  : 'bg-[#FFFAF5] text-[#7A5560]/85 border border-[#E8D5CC]/70 hover:border-[#E8D5CC]'
               }`}
             >
               <SzIcon className="w-4 h-4" strokeWidth={1.8} />
@@ -263,7 +263,7 @@ export function ShareableGenerator() {
 
       {/* Error */}
       {error && (
-        <div className="p-4 bg-rose-500/10 border border-rose-400/30 rounded-2xl text-sm text-rose-200 text-center inline-flex items-center justify-center gap-2 w-full">
+        <div className="p-4 bg-[#C97D7D]/10 border border-[#C97D7D]/30 rounded-2xl text-sm text-[#8B3D52] text-center inline-flex items-center justify-center gap-2 w-full">
           <AlertCircle className="w-4 h-4" />
           {error}
         </div>
@@ -272,7 +272,7 @@ export function ShareableGenerator() {
       {/* Preview */}
       {imageUrl && (
         <div className="space-y-4 animate-in fade-in zoom-in-95">
-          <div className="rounded-3xl overflow-hidden shadow-2xl shadow-rose-400/15 border border-white/10 max-w-sm mx-auto">
+          <div className="rounded-3xl overflow-hidden shadow-2xl shadow-[#C97D7D]/12 border border-[#E8D5CC] max-w-sm mx-auto">
             <img src={imageUrl} alt="Flare Pattern Card" className="w-full" />
           </div>
 
@@ -283,21 +283,21 @@ export function ShareableGenerator() {
                 <button
                   key={dest.id}
                   onClick={() => handleShare(dest.id)}
-                  className="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-white/4 border border-white/8 hover:bg-white/8 transition-colors cursor-pointer min-w-[72px]"
+                  className="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-[#FFFAF5] border border-[#E8D5CC]/70 hover:bg-[#3D1A24]/6 transition-colors cursor-pointer min-w-[72px]"
                 >
-                  <DIcon className="w-5 h-5 text-rose-300" strokeWidth={1.8} />
-                  <span className="text-[10px] text-white/65 font-medium">{dest.label}</span>
+                  <DIcon className="w-5 h-5 text-[#8B3D52]" strokeWidth={1.8} />
+                  <span className="text-[10px] text-[#7A5560] font-medium">{dest.label}</span>
                 </button>
               );
             })}
           </div>
 
           {!isPremium && (
-            <p className="text-center text-xs text-white/45">
+            <p className="text-center text-xs text-[#A88894]">
               Free version includes Endopath watermark.{' '}
               <button
                 onClick={() => useStore.getState().triggerPaywall('share_export')}
-                className="bg-gradient-to-br from-rose-400 to-amber-400 bg-clip-text text-transparent underline font-medium cursor-pointer"
+                className="bg-gradient-to-br from-[#C97D7D] to-[#8B3D52] bg-clip-text text-transparent underline font-medium cursor-pointer"
               >
                 Upgrade for clean exports
               </button>
@@ -308,14 +308,14 @@ export function ShareableGenerator() {
 
       {/* Empty state CTA */}
       {shareData.entriesCount === 0 && !error && (
-        <div className="text-center p-8 bg-white/4 rounded-3xl border border-white/8">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-rose-400/20 to-amber-400/20 border border-rose-300/15 flex items-center justify-center mx-auto mb-3">
-            <ImageIcon className="w-6 h-6 text-rose-300" strokeWidth={1.6} />
+        <div className="text-center p-8 bg-[#FFFAF5] rounded-3xl border border-[#E8D5CC]/70">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#C97D7D]/20 to-[#8B3D52]/20 border border-[#D89BA8]/15 flex items-center justify-center mx-auto mb-3">
+            <ImageIcon className="w-6 h-6 text-[#8B3D52]" strokeWidth={1.6} />
           </div>
-          <h3 className="text-xl font-semibold text-white font-['Cormorant_Garamond'] mb-2">
+          <h3 className="text-xl font-semibold text-[#3D1A24] font-['Cormorant_Garamond'] mb-2">
             No data yet
           </h3>
-          <p className="text-sm text-white/55 mb-4 max-w-xs mx-auto">
+          <p className="text-sm text-[#7A5560]/85 mb-4 max-w-xs mx-auto">
             Log your first symptom entry to start building your flare pattern visualization.
           </p>
           <Button onClick={() => useStore.getState().setScreen('log_entry')} variant="secondary">

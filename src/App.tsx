@@ -132,7 +132,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#1A0E13] text-white font-['Inter',system-ui,sans-serif]">
+    <div className="min-h-screen bg-[#FAF5F0] text-[#3D1A24] font-['Inter',system-ui,sans-serif]">
       {/* Screen content */}
       <div className="animate-in fade-in duration-300">{renderScreen()}</div>
 

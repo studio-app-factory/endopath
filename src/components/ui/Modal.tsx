@@ -28,13 +28,13 @@ export function Modal({ open, onClose, title, children, size = 'md' }: ModalProp
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/70 backdrop-blur-md animate-in fade-in"
+        className="absolute inset-0 bg-[#3D1A24]/40 backdrop-blur-md animate-in fade-in"
         onClick={onClose}
       />
       {/* Content */}
       <div
         className={cn(
-          'relative z-10 bg-[#241318] border border-white/10 rounded-3xl shadow-2xl shadow-black/60 w-full max-h-[90vh] overflow-y-auto animate-in zoom-in-95',
+          'relative z-10 bg-[#FFFAF5] border border-[#E8D5CC] rounded-3xl shadow-2xl shadow-[#8B3D52]/15 w-full max-h-[90vh] overflow-y-auto animate-in zoom-in-95',
           {
             sm: 'max-w-sm',
             md: 'max-w-md',
@@ -45,12 +45,12 @@ export function Modal({ open, onClose, title, children, size = 'md' }: ModalProp
       >
         {title && (
           <div className="flex items-center justify-between px-6 pt-6 pb-2">
-            <h2 className="text-xl font-semibold text-white font-['Cormorant_Garamond']">
+            <h2 className="text-xl font-semibold text-[#3D1A24] font-['Cormorant_Garamond']">
               {title}
             </h2>
             <button
               onClick={onClose}
-              className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-white/8 text-white/55 hover:text-white transition-colors cursor-pointer"
+              className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-[#3D1A24]/6 text-[#7A5560]/85 hover:text-[#3D1A24] transition-colors cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>

@@ -18,9 +18,9 @@ export function Card({
       className={cn(
         'rounded-3xl transition-all duration-200',
         {
-          default: 'bg-white/4 border border-white/8 backdrop-blur-sm',
-          elevated: 'bg-white/6 border border-white/10 shadow-xl shadow-rose-400/10',
-          outlined: 'bg-transparent border border-white/12',
+          default: 'bg-[#FFFAF5] border border-[#E8D5CC]/70 backdrop-blur-sm',
+          elevated: 'bg-[#3D1A24]/5 border border-[#E8D5CC] shadow-xl shadow-[#C97D7D]/8',
+          outlined: 'bg-transparent border border-[#E8D5CC]',
         }[variant],
         {
           none: '',

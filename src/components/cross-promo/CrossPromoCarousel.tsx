@@ -18,7 +18,7 @@ const FLOSEED_APPS: Array<FloseedApp & { iconComponent: LucideIcon; gradient: st
     discountPercent: 30,
     deepLink: 'https://apps.apple.com/app/migrainary/id000',
     iconComponent: Brain,
-    gradient: 'from-violet-400 to-fuchsia-400',
+    gradient: 'from-[#A88894] to-[#8B3D52]',
   },
   {
     id: 'fibroline',
@@ -29,7 +29,7 @@ const FLOSEED_APPS: Array<FloseedApp & { iconComponent: LucideIcon; gradient: st
     discountPercent: 30,
     deepLink: 'https://apps.apple.com/app/fibroline/id000',
     iconComponent: Dumbbell,
-    gradient: 'from-rose-400 to-amber-400',
+    gradient: 'from-[#C97D7D] to-[#8B3D52]',
   },
   {
     id: 'gutscout',
@@ -40,7 +40,7 @@ const FLOSEED_APPS: Array<FloseedApp & { iconComponent: LucideIcon; gradient: st
     discountPercent: 30,
     deepLink: 'https://apps.apple.com/app/gutscout/id000',
     iconComponent: Salad,
-    gradient: 'from-amber-400 to-rose-500',
+    gradient: 'from-[#B85970] to-[#8B3D52]',
   },
   {
     id: 'ms_compass',
@@ -51,7 +51,7 @@ const FLOSEED_APPS: Array<FloseedApp & { iconComponent: LucideIcon; gradient: st
     discountPercent: 30,
     deepLink: 'https://apps.apple.com/app/mscompass/id000',
     iconComponent: Compass,
-    gradient: 'from-violet-400 to-rose-400',
+    gradient: 'from-[#A88894] to-[#C97D7D]',
   },
 ];
 
@@ -64,23 +64,23 @@ export function CrossPromoCarousel() {
   };
 
   return (
-    <div className="min-h-screen bg-[#1A0E13] flex flex-col">
+    <div className="min-h-screen bg-[#FAF5F0] flex flex-col">
       {/* Header */}
       <div className="px-6 pt-12 pb-6 text-center">
         <div className="relative inline-block mb-5">
-          <div className="absolute top-1/2 left-1/2 w-32 h-32 -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl bg-gradient-to-br from-rose-400/45 to-amber-400/30 animate-halo" />
-          <div className="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-rose-400 to-amber-400 shadow-xl shadow-rose-400/40 flex items-center justify-center">
-            <Sprout className="w-8 h-8 text-[#1A0E13]" strokeWidth={1.8} />
+          <div className="absolute top-1/2 left-1/2 w-32 h-32 -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl bg-gradient-to-br from-[#C97D7D]/45 to-[#8B3D52]/30 animate-halo" />
+          <div className="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-[#C97D7D] to-[#8B3D52] shadow-xl shadow-[#C97D7D]/30 flex items-center justify-center">
+            <Sprout className="w-8 h-8 text-[#FFFAF5]" strokeWidth={1.8} />
           </div>
         </div>
-        <h1 className="text-3xl font-semibold text-white font-['Cormorant_Garamond'] mb-2 tracking-tight">
+        <h1 className="text-3xl font-semibold text-[#3D1A24] font-['Cormorant_Garamond'] mb-2 tracking-tight">
           The Floseed Family
         </h1>
-        <p className="text-sm text-white/55 max-w-xs mx-auto">
+        <p className="text-sm text-[#7A5560]/85 max-w-xs mx-auto">
           You're part of a community managing chronic conditions. These apps are built with
           the same privacy-first approach.
         </p>
-        <div className="mt-4 inline-block px-3 py-1.5 rounded-full bg-rose-400/12 border border-rose-300/25 text-xs text-rose-200 font-semibold">
+        <div className="mt-4 inline-block px-3 py-1.5 rounded-full bg-[#C97D7D]/12 border border-[#D89BA8]/25 text-xs text-[#8B3D52] font-semibold">
           As an Endopath member, get 30% off any of these apps
         </div>
       </div>
@@ -93,26 +93,26 @@ export function CrossPromoCarousel() {
             <button
               key={app.id}
               onClick={() => handleAppTap(app)}
-              className="w-full p-4 rounded-2xl bg-white/4 border border-white/8 hover:bg-white/8 transition-all flex items-center gap-4 text-left cursor-pointer"
+              className="w-full p-4 rounded-2xl bg-[#FFFAF5] border border-[#E8D5CC]/70 hover:bg-[#3D1A24]/6 transition-all flex items-center gap-4 text-left cursor-pointer"
             >
               <div
-                className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${app.gradient} flex items-center justify-center flex-shrink-0 shadow-lg shadow-rose-400/15`}
+                className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${app.gradient} flex items-center justify-center flex-shrink-0 shadow-lg shadow-[#C97D7D]/12`}
               >
-                <AppIcon className="w-7 h-7 text-[#1A0E13]" strokeWidth={1.8} />
+                <AppIcon className="w-7 h-7 text-[#FFFAF5]" strokeWidth={1.8} />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <h3 className="font-semibold text-white text-sm">{app.name}</h3>
-                  <span className="px-2 py-0.5 rounded-full bg-gradient-to-br from-rose-400 to-amber-400 text-[#1A0E13] text-[10px] font-bold">
+                  <h3 className="font-semibold text-[#3D1A24] text-sm">{app.name}</h3>
+                  <span className="px-2 py-0.5 rounded-full bg-gradient-to-br from-[#C97D7D] to-[#8B3D52] text-[#FFFAF5] text-[10px] font-bold">
                     -{app.discountPercent}%
                   </span>
                 </div>
-                <p className="text-xs text-white/55 mt-0.5 line-clamp-2">{app.description}</p>
-                <p className="text-[10px] text-white/40 mt-1 uppercase tracking-wider">
+                <p className="text-xs text-[#7A5560]/85 mt-0.5 line-clamp-2">{app.description}</p>
+                <p className="text-[10px] text-[#A88894]/75 mt-1 uppercase tracking-wider">
                   {app.category}
                 </p>
               </div>
-              <ChevronRight className="w-4 h-4 text-white/45 flex-shrink-0" />
+              <ChevronRight className="w-4 h-4 text-[#A88894] flex-shrink-0" />
             </button>
           );
         })}
@@ -122,7 +122,7 @@ export function CrossPromoCarousel() {
       <div className="px-6 pb-10 pt-4">
         <button
           onClick={closeCrossPromo}
-          className="w-full py-3 text-sm text-white/45 hover:text-white/65 transition-colors cursor-pointer font-medium"
+          className="w-full py-3 text-sm text-[#A88894] hover:text-[#7A5560] transition-colors cursor-pointer font-medium"
         >
           Maybe later
         </button>
