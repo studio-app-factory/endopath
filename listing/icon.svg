@@ -1,37 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#F472B6"/>
-      <stop offset="100%" stop-color="#FB923C"/>
+    <linearGradient id="roseGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#C97D7D"/>
+      <stop offset="100%" stop-color="#8B3D52"/>
     </linearGradient>
-    <radialGradient id="halo" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#F472B6" stop-opacity="0.45"/>
-      <stop offset="100%" stop-color="#F472B6" stop-opacity="0"/>
+    <radialGradient id="halo" cx="50%" cy="50%" r="55%">
+      <stop offset="0%" stop-color="#EFD3DA" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#EFD3DA" stop-opacity="0"/>
     </radialGradient>
   </defs>
-  <rect width="1024" height="1024" rx="180" fill="#1A0E13"/>
-  <circle cx="512" cy="512" r="380" fill="url(#halo)"/>
-  <circle cx="512" cy="512" r="280" fill="none" stroke="url(#accentGrad)" stroke-width="6" stroke-opacity="0.6"/>
+  <rect width="1024" height="1024" rx="180" fill="#FAF5F0"/>
+  <circle cx="512" cy="512" r="420" fill="url(#halo)"/>
 
-  <!-- Orbiting hearts (3 around the halo) -->
-  <g fill="url(#accentGrad)" opacity="0.55">
-    <path d="M512,210 c-12,-22 -44,-22 -52,4 c-6,18 6,32 28,52 l24,22 l24,-22 c22,-20 34,-34 28,-52 c-8,-26 -40,-26 -52,-4 z" transform="translate(0,0)"/>
-    <path d="M512,210 c-12,-22 -44,-22 -52,4 c-6,18 6,32 28,52 l24,22 l24,-22 c22,-20 34,-34 28,-52 c-8,-26 -40,-26 -52,-4 z" transform="translate(280,295) rotate(120 512 234)"/>
-    <path d="M512,210 c-12,-22 -44,-22 -52,4 c-6,18 6,32 28,52 l24,22 l24,-22 c22,-20 34,-34 28,-52 c-8,-26 -40,-26 -52,-4 z" transform="translate(-280,295) rotate(-120 512 234)"/>
+  <!-- Watercolor uterus -->
+  <g transform="translate(512,540)" fill="url(#roseGrad)" opacity="0.85">
+    <path d="M 0,-120 C 60,-130 130,-100 180,-50 C 200,-20 200,30 170,55 C 140,75 110,55 95,30 C 90,15 95,0 80,-5 C 70,-8 55,5 40,15 C 25,25 10,30 0,30 C -10,30 -25,25 -40,15 C -55,5 -70,-8 -80,-5 C -95,0 -90,15 -95,30 C -110,55 -140,75 -170,55 C -200,30 -200,-20 -180,-50 C -130,-100 -60,-130 0,-120 Z" />
+    <path d="M -45,30 C -40,80 -20,150 0,200 C 20,150 40,80 45,30 C 30,40 15,45 0,45 C -15,45 -30,40 -45,30 Z" opacity="0.85"/>
   </g>
 
-  <!-- Lotus (centred) -->
-  <g transform="translate(512,540)" stroke="url(#accentGrad)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" fill="none">
-    <!-- Outer petals -->
-    <path d="M -200,0 C -190,-80 -110,-150 0,-160 C 110,-150 190,-80 200,0 C 110,30 60,40 0,40 C -60,40 -110,30 -200,0 Z" opacity="0.55"/>
-    <!-- Middle petals -->
-    <path d="M -140,10 C -130,-50 -70,-110 0,-120 C 70,-110 130,-50 140,10 C 70,30 40,35 0,35 C -40,35 -70,30 -140,10 Z" opacity="0.8"/>
-    <!-- Inner petal/bud -->
-    <path d="M -70,20 C -60,-20 -30,-70 0,-80 C 30,-70 60,-20 70,20 C 35,30 20,32 0,32 C -20,32 -35,30 -70,20 Z"/>
-    <!-- Centre stamen -->
-    <line x1="0" y1="-50" x2="0" y2="20"/>
-    <line x1="-25" y1="-30" x2="-15" y2="15"/>
-    <line x1="25" y1="-30" x2="15" y2="15"/>
+  <!-- Falling petals -->
+  <g fill="#D89BA8" opacity="0.75">
+    <ellipse cx="700" cy="280" rx="22" ry="14" transform="rotate(35 700 280)"/>
+    <ellipse cx="760" cy="340" rx="16" ry="10" transform="rotate(-20 760 340)"/>
+    <ellipse cx="680" cy="600" rx="18" ry="12" transform="rotate(60 680 600)"/>
+    <ellipse cx="350" cy="640" rx="16" ry="10" transform="rotate(-45 350 640)"/>
+    <ellipse cx="600" cy="780" rx="14" ry="9" transform="rotate(15 600 780)"/>
   </g>
 </svg>

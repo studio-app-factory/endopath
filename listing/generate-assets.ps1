@@ -36,6 +36,6 @@ if ($svgexport) {
 }
 
 Write-Host "Running @capacitor/assets generate..." -ForegroundColor Cyan
-npx @capacitor/assets generate --iconBackgroundColor '#1A0E13' --splashBackgroundColor '#1A0E13' --pwa --iconBackgroundColorDark '#1A0E13' --splashBackgroundColorDark '#1A0E13'
+npx @capacitor/assets generate --iconBackgroundColor '#FAF5F0' --splashBackgroundColor '#FAF5F0' --pwa --iconBackgroundColorDark '#FAF5F0' --splashBackgroundColorDark '#FAF5F0'
 
 Write-Host "Assets generated. Check ios/App/App/Assets.xcassets/ and android/app/src/main/res/" -ForegroundColor Green

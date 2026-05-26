@@ -1,27 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="2732" height="2732" viewBox="0 0 2732 2732" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <radialGradient id="splashHalo" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#F472B6" stop-opacity="0.32"/>
-      <stop offset="100%" stop-color="#F472B6" stop-opacity="0"/>
+    <radialGradient id="splashHalo" cx="50%" cy="50%" r="55%">
+      <stop offset="0%" stop-color="#EFD3DA" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#EFD3DA" stop-opacity="0"/>
     </radialGradient>
     <linearGradient id="splashAccent" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#F472B6"/>
-      <stop offset="100%" stop-color="#FB923C"/>
+      <stop offset="0%" stop-color="#C97D7D"/>
+      <stop offset="100%" stop-color="#8B3D52"/>
     </linearGradient>
   </defs>
-  <rect width="2732" height="2732" fill="#1A0E13"/>
-  <circle cx="1366" cy="1366" r="900" fill="url(#splashHalo)"/>
+  <rect width="2732" height="2732" fill="#FAF5F0"/>
+  <circle cx="1366" cy="1366" r="1000" fill="url(#splashHalo)"/>
 
-  <!-- Lotus centre -->
-  <g transform="translate(1366,1400)" stroke="url(#splashAccent)" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" fill="none">
-    <path d="M -360,0 C -340,-150 -200,-280 0,-300 C 200,-280 340,-150 360,0 C 200,55 110,70 0,70 C -110,70 -200,55 -360,0 Z" opacity="0.55"/>
-    <path d="M -260,20 C -240,-100 -130,-210 0,-230 C 130,-210 240,-100 260,20 C 130,55 70,65 0,65 C -70,65 -130,55 -260,20 Z" opacity="0.8"/>
-    <path d="M -130,40 C -110,-40 -55,-130 0,-150 C 55,-130 110,-40 130,40 C 65,55 35,60 0,60 C -35,60 -65,55 -130,40 Z"/>
-    <line x1="0" y1="-95" x2="0" y2="40"/>
-    <line x1="-45" y1="-55" x2="-30" y2="30"/>
-    <line x1="45" y1="-55" x2="30" y2="30"/>
+  <g transform="translate(1366,1380)" fill="url(#splashAccent)" opacity="0.85">
+    <path d="M 0,-220 C 110,-235 240,-180 330,-90 C 365,-35 365,55 310,100 C 255,135 200,100 175,55 C 165,28 175,0 145,-10 C 130,-15 100,10 75,30 C 45,50 20,55 0,55 C -20,55 -45,50 -75,30 C -100,10 -130,-15 -145,-10 C -175,0 -165,28 -175,55 C -200,100 -255,135 -310,100 C -365,55 -365,-35 -330,-90 C -240,-180 -110,-235 0,-220 Z"/>
+    <path d="M -85,55 C -75,150 -40,275 0,365 C 40,275 75,150 85,55 C 55,75 25,82 0,82 C -25,82 -55,75 -85,55 Z" opacity="0.85"/>
   </g>
 
-  <text x="1366" y="2240" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="68" font-weight="600" fill="rgba(255,255,255,0.45)" letter-spacing="6">ENDOPATH</text>
+  <text x="1366" y="2350" text-anchor="middle" font-family="Cormorant Garamond, Georgia, serif" font-size="110" font-weight="500" fill="#8B3D52" letter-spacing="8">Endopath</text>
 </svg>

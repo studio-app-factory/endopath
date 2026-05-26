@@ -30,7 +30,7 @@ export default function App() {
 
   // Initialize app
   useEffect(() => {
-    document.body.style.backgroundColor = '#1A0E13';
+    document.body.style.backgroundColor = '#FAF5F0';
 
     let isFirstOpen = false;
     const openedBefore = localStorage.getItem('endopath_opened');

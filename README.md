@@ -109,9 +109,8 @@ Events are stored locally and flushed to Mixpanel in production.
 
 ## 💰 Monetization
 
-- **Lifetime**: $9.99 USD (com.gnosis.endopath.lifetime)
-- **Weekly**: $4.99/wk USD (com.gnosis.endopath.weekly)
-- **Lifetime Upgrade**: $19.99 USD (com.gnosis.endopath.lifetime_upgrade)
+- **Annual**: $70/yr USD (com.gnosis.endopath.annual)
+- **Monthly**: $6.99/mo USD (com.gnosis.endopath.monthly)
 
 Free tier: 10 entries OR 7-day trial (whichever provides higher value demo).
 

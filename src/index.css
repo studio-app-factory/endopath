@@ -4,9 +4,20 @@
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   --font-serif: 'Cormorant Garamond', Georgia, serif;
   --font-mono: 'JetBrains Mono', monospace;
-}
 
-/* ── Endopath — Brownnoise Pro pattern, Burgundy Night ── */
+  /* ── Endopath — Watercolor Cream/Rose palette ── */
+  --color-cream: #FAF5F0;
+  --color-cream-soft: #FFFAF5;
+  --color-cream-warm: #F0E3D5;
+  --color-wine: #3D1A24;
+  --color-wine-soft: #7A5560;
+  --color-wine-muted: #A88894;
+  --color-rose: #C97D7D;
+  --color-rose-deep: #8B3D52;
+  --color-rose-light: #D89BA8;
+  --color-petal: #EFD3DA;
+  --color-border: #E8D5CC;
+}
 
 * {
   -webkit-tap-highlight-color: transparent;
@@ -16,8 +27,8 @@ html, body, #root {
   height: 100%;
   margin: 0;
   padding: 0;
-  background: #1A0E13;
-  color: #ffffff;
+  background: #FAF5F0;
+  color: #3D1A24;
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -34,12 +45,12 @@ html, body, #root {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(139, 61, 82, 0.18);
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(139, 61, 82, 0.32);
 }
 
 /* Range input styling */
@@ -53,7 +64,7 @@ input[type='range'] {
 input[type='range']::-webkit-slider-runnable-track {
   height: 4px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(139, 61, 82, 0.15);
 }
 
 input[type='range']::-webkit-slider-thumb {
@@ -62,31 +73,31 @@ input[type='range']::-webkit-slider-thumb {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: #fb7185;
+  background: #C97D7D;
   margin-top: -7px;
-  box-shadow: 0 0 16px rgba(251, 113, 133, 0.55), 0 0 4px rgba(251, 113, 133, 0.8);
-  border: 2px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 16px rgba(201, 125, 125, 0.4), 0 0 4px rgba(139, 61, 82, 0.55);
+  border: 2px solid rgba(255, 250, 245, 0.85);
 }
 
 input[type='range']::-moz-range-track {
   height: 4px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(139, 61, 82, 0.15);
 }
 
 input[type='range']::-moz-range-thumb {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: #fb7185;
-  border: 2px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 0 16px rgba(251, 113, 133, 0.55);
+  background: #C97D7D;
+  border: 2px solid rgba(255, 250, 245, 0.85);
+  box-shadow: 0 0 16px rgba(201, 125, 125, 0.4);
 }
 
 /* Selection */
 ::selection {
-  background: rgba(251, 113, 133, 0.35);
-  color: #fff;
+  background: rgba(201, 125, 125, 0.35);
+  color: #3D1A24;
 }
 
 /* Safe area for bottom nav */

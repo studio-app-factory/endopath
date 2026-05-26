@@ -21,18 +21,18 @@ import { useStore } from '@/lib/store';
 
 const PRODUCTS = [
   {
-    id: 'com.gnosis.endopath.lifetime',
-    name: 'Lifetime',
-    price: '$9.99',
-    period: 'one-time',
+    id: 'com.gnosis.endopath.annual',
+    name: 'Annual',
+    price: '$70',
+    period: 'per year',
     popular: true,
-    savings: 'Best value',
+    savings: 'Save 17%',
   },
   {
-    id: 'com.gnosis.endopath.weekly',
-    name: 'Weekly',
-    price: '$4.99',
-    period: 'per week',
+    id: 'com.gnosis.endopath.monthly',
+    name: 'Monthly',
+    price: '$6.99',
+    period: 'per month',
     popular: false,
   },
 ];
