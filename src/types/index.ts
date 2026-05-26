@@ -243,6 +243,7 @@ export type PortfolioEvent =
   | 'onboarding_abandoned'
   | 'paywall_viewed'
   | 'paywall_purchased'
+  | 'paywall_purchase_failed'
   | 'paywall_dismissed'
   | 'paywall_restored'
   | 'session_started'

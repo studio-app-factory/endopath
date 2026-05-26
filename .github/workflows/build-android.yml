@@ -55,6 +55,9 @@ jobs:
           fi
 
       - name: Build web app
+        env:
+          VITE_REVENUECAT_API_KEY_ANDROID: ${{ secrets.REVENUECAT_API_KEY_ANDROID }}
+          VITE_REVENUECAT_API_KEY_IOS: ${{ secrets.REVENUECAT_API_KEY_IOS }}
         run: npm run build
 
       - name: Add Android platform
@@ -108,6 +111,24 @@ jobs:
           keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}
           keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}
           EOF
+
+      - name: Sync version from git tag → build.gradle
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          VERSION_NAME="${GITHUB_REF#refs/tags/v}"
+          # versionCode = number of v* tags so far (monotonically increasing)
+          git fetch --tags --force
+          VERSION_CODE=$(git tag -l 'v*' | wc -l)
+          echo "Setting versionName=$VERSION_NAME versionCode=$VERSION_CODE"
+          python3 << PYTHON
+          import re
+          with open('android/app/build.gradle', 'r') as f:
+              content = f.read()
+          content = re.sub(r'versionCode\s+\d+', f'versionCode $VERSION_CODE', content)
+          content = re.sub(r'versionName\s+"[^"]+"', f'versionName "$VERSION_NAME"', content)
+          with open('android/app/build.gradle', 'w') as f:
+              f.write(content)
+          PYTHON
 
       - name: Inject signing config into build.gradle
         run: |

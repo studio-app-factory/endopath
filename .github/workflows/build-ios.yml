@@ -42,6 +42,9 @@ jobs:
           fi
 
       - name: Build web app
+        env:
+          VITE_REVENUECAT_API_KEY_IOS: ${{ secrets.REVENUECAT_API_KEY_IOS }}
+          VITE_REVENUECAT_API_KEY_ANDROID: ${{ secrets.REVENUECAT_API_KEY_ANDROID }}
         run: npm run build
 
       - name: Add iOS platform

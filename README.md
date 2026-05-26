@@ -109,12 +109,33 @@ Events are stored locally and flushed to Mixpanel in production.
 
 ## 💰 Monetization
 
-- **Annual**: $70/yr USD (com.gnosis.endopath.annual)
-- **Monthly**: $6.99/mo USD (com.gnosis.endopath.monthly)
+- **Annual**: $70/yr USD (`com.gnosis.endopath.annual`)
+- **Monthly**: $6.99/mo USD (`com.gnosis.endopath.monthly`)
 
 Free tier: 10 entries OR 7-day trial (whichever provides higher value demo).
 
 Paywall placed on onboarding screen 3-4 (after value experience).
+
+### Billing (RevenueCat)
+
+Real in-app purchases are wired through `@revenuecat/purchases-capacitor` in
+`src/lib/billing.ts`. The store and paywall call into that module; on web or
+when API keys aren't set, it falls back to a dev mock that grants premium for
+free.
+
+**Required setup before a release build:**
+
+1. Create a RevenueCat project at https://app.revenuecat.com, configure the
+   entitlement `premium` and the two products listed above (matching the IDs
+   in `metadata/revenuecat-config.json`).
+2. Add these GitHub repo secrets:
+   - `REVENUECAT_API_KEY_ANDROID` (e.g. `goog_xxx`)
+   - `REVENUECAT_API_KEY_IOS` (e.g. `appl_xxx`)
+3. Configure the same products in Google Play Console (Monetize → Products →
+   Subscriptions) and App Store Connect.
+
+Local dev: copy `.env.example` to `.env` and fill in your keys, or leave them
+blank to use the mock.
 
 ## 🌐 Deployment
 
@@ -137,6 +158,24 @@ npx cap add android
 npx cap sync
 npx cap open android
 ```
+
+### Releasing via CI
+
+Pushing a `v*` git tag triggers `.github/workflows/build-android.yml`, which:
+1. Builds the web app with the RevenueCat keys injected from secrets
+2. Generates the `android/` folder fresh (`npx cap add android`)
+3. Syncs version name + code from the tag (e.g. `v1.0.0` → `versionName "1.0.0"`,
+   `versionCode = number of v* tags so far`)
+4. Signs the AAB with the keystore from `ANDROID_KEYSTORE_BASE64`
+5. Uploads to the **Google Play Internal Testing track** as a draft
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+Then promote the draft in Play Console after filling Data Safety + content
+rating questionnaires.
 
 ## 📋 App Store Metadata
 

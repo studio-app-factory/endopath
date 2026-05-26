@@ -3,6 +3,7 @@
 // RevenueCat-style, shown after value demo
 // ============================================================
 
+import { useState } from 'react';
 import {
   X,
   Sparkles,
@@ -47,7 +48,32 @@ const FEATURES: Array<{ icon: LucideIcon; text: string }> = [
 ];
 
 export function PaywallScreen() {
-  const { completePurchase, dismissPaywall } = useStore();
+  const { completePurchase, dismissPaywall, restorePurchases } = useStore();
+  const [busyProduct, setBusyProduct] = useState<string | null>(null);
+  const [restoring, setRestoring] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handlePurchase = async (productId: string) => {
+    setError(null);
+    setBusyProduct(productId);
+    const result = await completePurchase(productId);
+    setBusyProduct(null);
+    if (!result.success && !result.userCancelled) {
+      setError(result.error || 'Purchase could not be completed. Please try again.');
+    }
+  };
+
+  const handleRestore = async () => {
+    setError(null);
+    setRestoring(true);
+    const result = await restorePurchases();
+    setRestoring(false);
+    if (!result.success) {
+      setError(result.error || 'Restore failed.');
+    } else if (!result.isPremium) {
+      setError('No previous purchases found on this account.');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#FAF5F0] flex flex-col">
@@ -98,8 +124,9 @@ export function PaywallScreen() {
           {PRODUCTS.map((p) => (
             <button
               key={p.id}
-              onClick={() => completePurchase(p.id)}
-              className={`w-full p-4 rounded-2xl border-2 transition-all text-left flex items-center justify-between cursor-pointer ${
+              onClick={() => handlePurchase(p.id)}
+              disabled={busyProduct !== null || restoring}
+              className={`w-full p-4 rounded-2xl border-2 transition-all text-left flex items-center justify-between cursor-pointer disabled:opacity-60 disabled:cursor-wait ${
                 p.popular
                   ? 'border-[#C97D7D]/60 bg-gradient-to-br from-[#C97D7D]/12 to-[#8B3D52]/8 shadow-xl shadow-[#C97D7D]/12'
                   : 'border-[#E8D5CC] bg-[#FFFAF5] hover:bg-[#3D1A24]/5'
@@ -127,6 +154,13 @@ export function PaywallScreen() {
           ))}
         </div>
 
+        {/* Inline error */}
+        {error && (
+          <div className="w-full mb-4 px-4 py-2.5 rounded-xl bg-[#C97D7D]/10 border border-[#C97D7D]/30 text-xs text-[#8B3D52] text-center">
+            {error}
+          </div>
+        )}
+
         {/* Social proof */}
         <div className="flex items-center gap-1.5 text-xs text-[#7A5560]/85 mb-6">
           <Sparkles className="w-3.5 h-3.5 text-[#8B3D52]" />
@@ -138,17 +172,19 @@ export function PaywallScreen() {
         {/* Continue free */}
         <button
           onClick={dismissPaywall}
-          className="text-sm bg-gradient-to-br from-[#C97D7D] to-[#8B3D52] bg-clip-text text-transparent hover:opacity-80 font-medium transition-opacity cursor-pointer mb-4"
+          disabled={busyProduct !== null || restoring}
+          className="text-sm bg-gradient-to-br from-[#C97D7D] to-[#8B3D52] bg-clip-text text-transparent hover:opacity-80 font-medium transition-opacity cursor-pointer mb-4 disabled:opacity-40 disabled:cursor-not-allowed"
         >
           Continue with limited free version
         </button>
 
         {/* Restore */}
         <button
-          onClick={() => useStore.getState().restorePurchases()}
-          className="text-xs text-[#A88894] hover:text-[#7A5560] transition-colors cursor-pointer mb-6"
+          onClick={handleRestore}
+          disabled={busyProduct !== null || restoring}
+          className="text-xs text-[#A88894] hover:text-[#7A5560] transition-colors cursor-pointer mb-6 disabled:opacity-40 disabled:cursor-wait"
         >
-          Restore Purchases
+          {restoring ? 'Restoring…' : 'Restore Purchases'}
         </button>
       </div>
     </div>
