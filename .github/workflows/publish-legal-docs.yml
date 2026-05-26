@@ -1,0 +1,83 @@
+name: Publish Legal Docs to GitHub Pages
+
+# Publishes listing/privacy.html and listing/terms.html (plus a tiny index)
+# to GitHub Pages so Play Console / App Store have a public HTTPS URL.
+#
+# Trigger:
+#   - Any push to main that changes listing/privacy.html or listing/terms.html
+#   - Manual dispatch (in case you want to republish)
+#
+# The published site lives at:
+#   https://<owner>.github.io/<repo>/privacy.html
+#   https://<owner>.github.io/<repo>/terms.html
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'listing/privacy.html'
+      - 'listing/terms.html'
+      - '.github/workflows/publish-legal-docs.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Assemble Pages site
+        run: |
+          mkdir -p _site
+          cp listing/privacy.html _site/privacy.html
+          cp listing/terms.html   _site/terms.html
+          cat > _site/index.html << 'HTML'
+          <!doctype html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Endopath — Legal</title>
+            <style>
+              body { font-family: -apple-system, system-ui, sans-serif; max-width: 720px; margin: 40px auto; padding: 0 20px; line-height: 1.6; color: #1a1a1a; background: #FAF5F0; }
+              h1 { font-size: 28px; margin-bottom: 8px; color: #3D1A24; }
+              p { color: #7A5560; }
+              a { color: #8B3D52; text-decoration: none; font-weight: 600; }
+              a:hover { text-decoration: underline; }
+              ul { list-style: none; padding: 0; }
+              li { margin: 12px 0; }
+            </style>
+          </head>
+          <body>
+            <h1>Endopath — Legal</h1>
+            <p>Privacy-first endometriosis symptom &amp; flare tracker.</p>
+            <ul>
+              <li><a href="privacy.html">Privacy Policy</a></li>
+              <li><a href="terms.html">Terms of Service</a></li>
+            </ul>
+          </body>
+          </html>
+          HTML
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
