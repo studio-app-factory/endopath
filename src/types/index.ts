@@ -14,13 +14,15 @@ export interface UserProfile {
   totalShareActions: number;
   floseedPortfolioApps: string[];
   onboardingCompleted: boolean;
-  trialEntriesUsed: number;
-  trialStartDate?: string;
+  /** ISO timestamp when the 14-day Pro trial ends. null = no trial active. */
+  trialEndsAt: string | null;
+  /** True once the trial has been started — used to prevent re-offering. */
+  trialUsed: boolean;
   currency: CurrencyCode;
   locale: LocaleCode;
 }
 
-export type CurrencyCode = 'USD' | 'BRL' | 'EUR' | 'GBP';
+export type CurrencyCode = 'USD' | 'AUD' | 'BRL' | 'EUR' | 'GBP';
 export type LocaleCode = 'en' | 'pt_BR' | 'es' | 'de';
 
 // --- Symptom Logging ---
@@ -200,7 +202,9 @@ export type PaywallTrigger =
   | 'onboarding_step3'
   | 'share_export'
   | 'settings_upgrade'
-  | 'feature_limit_reached';
+  | 'history_locked'
+  | 'analytics_locked'
+  | 'backup_locked';
 
 export interface PaywallProduct {
   id: string;
@@ -246,6 +250,7 @@ export type PortfolioEvent =
   | 'paywall_purchase_failed'
   | 'paywall_dismissed'
   | 'paywall_restored'
+  | 'trial_started'
   | 'session_started'
   | 'session_ended'
   | 'shareable_generated'
@@ -283,6 +288,10 @@ export interface AppState {
   showPaywall: boolean;
   paywallTrigger: PaywallTrigger | null;
   showCrossPromo: boolean;
+  /** True iff the user holds an active RevenueCat 'premium' entitlement. */
   isPremium: boolean;
-  trialEntriesRemaining: number;
+  /** ISO timestamp; null when no trial active or already ended. */
+  trialEndsAt: string | null;
+  /** True once trial has been used (prevents re-offer). */
+  trialUsed: boolean;
 }

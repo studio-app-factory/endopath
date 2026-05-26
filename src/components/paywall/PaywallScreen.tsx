@@ -1,57 +1,91 @@
 // ============================================================
 // ENDOPATH — Paywall Screen
-// RevenueCat-style, shown after value demo
+// Drives the freemium → Pro upgrade flow. Surfaces:
+//   - The 14-day Pro trial (one-shot per device, no card, no auto-renew)
+//   - Annual + monthly Pro subscriptions via RevenueCat
+//   - Restore purchases
+// All product copy and prices fall back to AUD literals; when RevenueCat
+// is available the user sees their locale's actual priceString.
 // ============================================================
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   X,
   Sparkles,
-  Lock,
-  LineChart,
-  ImageDown,
+  Calendar,
   FileText,
-  LayoutTemplate,
-  ShieldCheck,
+  LineChart,
+  Layers,
+  CloudUpload,
   Check,
   Star,
   Flower2,
   type LucideIcon,
 } from 'lucide-react';
 import { useStore } from '@/lib/store';
+import { getLocalisedPrices } from '@/lib/billing';
 
-const PRODUCTS = [
+const PRODUCT_ANNUAL_ID = 'com.gnosis.endopath.pro.annual';
+const PRODUCT_MONTHLY_ID = 'com.gnosis.endopath.pro.monthly';
+
+interface Product {
+  id: string;
+  name: string;
+  defaultPrice: string;
+  period: string;
+  popular: boolean;
+  savings?: string;
+}
+
+const PRODUCTS: Product[] = [
   {
-    id: 'com.gnosis.endopath.annual',
+    id: PRODUCT_ANNUAL_ID,
     name: 'Annual',
-    price: '$70',
+    defaultPrice: '$69 AUD',
     period: 'per year',
     popular: true,
-    savings: 'Save 17%',
+    savings: 'Save 42%',
   },
   {
-    id: 'com.gnosis.endopath.monthly',
+    id: PRODUCT_MONTHLY_ID,
     name: 'Monthly',
-    price: '$6.99',
+    defaultPrice: '$9.99 AUD',
     period: 'per month',
     popular: false,
   },
 ];
 
 const FEATURES: Array<{ icon: LucideIcon; text: string }> = [
-  { icon: Lock, text: 'Unlimited symptom & flare tracking' },
-  { icon: LineChart, text: '12-month flare pattern analysis' },
-  { icon: ImageDown, text: 'Clean share cards (no watermark)' },
+  { icon: Calendar, text: 'Unlimited cycle & symptom history' },
   { icon: FileText, text: 'Doctor-ready PDF exports' },
-  { icon: LayoutTemplate, text: 'All premium templates' },
-  { icon: ShieldCheck, text: 'Full privacy — data stays on device' },
+  { icon: LineChart, text: 'Cycle & symptom correlation reports' },
+  { icon: Layers, text: 'Cross-symptom analytics' },
+  { icon: CloudUpload, text: 'Data backup & restore' },
+  { icon: Sparkles, text: 'Ad-free experience' },
 ];
 
 export function PaywallScreen() {
-  const { completePurchase, dismissPaywall, restorePurchases } = useStore();
+  const completePurchase = useStore((s) => s.completePurchase);
+  const dismissPaywall = useStore((s) => s.dismissPaywall);
+  const restorePurchases = useStore((s) => s.restorePurchases);
+  const startTrial = useStore((s) => s.startTrial);
+  const trialUsed = useStore((s) => s.trialUsed);
+
   const [busyProduct, setBusyProduct] = useState<string | null>(null);
   const [restoring, setRestoring] = useState(false);
+  const [trialStarting, setTrialStarting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [livePrices, setLivePrices] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    let cancelled = false;
+    getLocalisedPrices().then((prices) => {
+      if (!cancelled) setLivePrices(prices);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const handlePurchase = async (productId: string) => {
     setError(null);
@@ -75,13 +109,24 @@ export function PaywallScreen() {
     }
   };
 
+  const handleStartTrial = () => {
+    setTrialStarting(true);
+    startTrial();
+    // startTrial dismisses the paywall internally; brief flag keeps button disabled
+    // through the transition to avoid double-taps.
+    setTimeout(() => setTrialStarting(false), 600);
+  };
+
+  const anyBusy = busyProduct !== null || restoring || trialStarting;
+
   return (
     <div className="min-h-screen bg-[#FAF5F0] flex flex-col">
       {/* Close button */}
       <div className="px-4 pt-5 flex justify-end">
         <button
           onClick={dismissPaywall}
-          className="w-10 h-10 flex items-center justify-center rounded-full bg-[#3D1A24]/5 border border-[#E8D5CC] hover:bg-[#3D1A24]/7 transition-all cursor-pointer"
+          disabled={anyBusy}
+          className="w-10 h-10 flex items-center justify-center rounded-full bg-[#3D1A24]/5 border border-[#E8D5CC] hover:bg-[#3D1A24]/7 transition-all cursor-pointer disabled:opacity-40"
         >
           <X className="w-4 h-4 text-[#7A5560]" />
         </button>
@@ -98,10 +143,10 @@ export function PaywallScreen() {
         </div>
 
         <h1 className="text-4xl font-semibold text-[#3D1A24] font-['Cormorant_Garamond'] mb-2 tracking-tight">
-          Unlock Full Access
+          Endopath Pro
         </h1>
         <p className="text-[#7A5560]/85 text-sm mb-8 max-w-xs">
-          Track without limits. Export clean reports. Share your story beautifully.
+          Unlimited history, doctor-ready exports, and pattern insights to take to your specialist.
         </p>
 
         {/* Feature bullets */}
@@ -119,39 +164,56 @@ export function PaywallScreen() {
           })}
         </div>
 
-        {/* Pricing */}
+        {/* Trial CTA — only when not yet used */}
+        {!trialUsed && (
+          <button
+            onClick={handleStartTrial}
+            disabled={anyBusy}
+            className="w-full mb-3 p-4 rounded-2xl bg-gradient-to-br from-[#C97D7D] to-[#8B3D52] text-[#FFFAF5] shadow-lg shadow-[#C97D7D]/25 hover:shadow-xl hover:shadow-[#C97D7D]/35 active:translate-y-0 hover:-translate-y-0.5 transition-all font-semibold text-sm cursor-pointer disabled:opacity-60 disabled:cursor-wait disabled:translate-y-0"
+          >
+            <span className="block">Start 14-day free trial</span>
+            <span className="block text-[11px] font-normal opacity-90 mt-0.5">
+              No card required · cancel anytime
+            </span>
+          </button>
+        )}
+
+        {/* Subscription buttons */}
         <div className="space-y-3 w-full mb-6">
-          {PRODUCTS.map((p) => (
-            <button
-              key={p.id}
-              onClick={() => handlePurchase(p.id)}
-              disabled={busyProduct !== null || restoring}
-              className={`w-full p-4 rounded-2xl border-2 transition-all text-left flex items-center justify-between cursor-pointer disabled:opacity-60 disabled:cursor-wait ${
-                p.popular
-                  ? 'border-[#C97D7D]/60 bg-gradient-to-br from-[#C97D7D]/12 to-[#8B3D52]/8 shadow-xl shadow-[#C97D7D]/12'
-                  : 'border-[#E8D5CC] bg-[#FFFAF5] hover:bg-[#3D1A24]/5'
-              }`}
-            >
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="font-semibold text-[#3D1A24]">{p.name}</span>
-                  {p.savings && (
-                    <span className="px-2 py-0.5 rounded-full bg-gradient-to-br from-[#C97D7D] to-[#8B3D52] text-[#FFFAF5] text-[10px] font-bold">
-                      {p.savings}
-                    </span>
-                  )}
+          {PRODUCTS.map((p) => {
+            const livePrice = livePrices[p.id];
+            return (
+              <button
+                key={p.id}
+                onClick={() => handlePurchase(p.id)}
+                disabled={anyBusy}
+                className={`w-full p-4 rounded-2xl border-2 transition-all text-left flex items-center justify-between cursor-pointer disabled:opacity-60 disabled:cursor-wait ${
+                  p.popular
+                    ? 'border-[#C97D7D]/60 bg-gradient-to-br from-[#C97D7D]/12 to-[#8B3D52]/8 shadow-xl shadow-[#C97D7D]/12'
+                    : 'border-[#E8D5CC] bg-[#FFFAF5] hover:bg-[#3D1A24]/5'
+                }`}
+              >
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold text-[#3D1A24]">{p.name}</span>
+                    {p.savings && (
+                      <span className="px-2 py-0.5 rounded-full bg-gradient-to-br from-[#C97D7D] to-[#8B3D52] text-[#FFFAF5] text-[10px] font-bold">
+                        {p.savings}
+                      </span>
+                    )}
+                  </div>
+                  <span className="text-sm text-[#7A5560]">
+                    {livePrice ?? p.defaultPrice} {p.period}
+                  </span>
                 </div>
-                <span className="text-sm text-[#7A5560]">
-                  {p.price} {p.period}
-                </span>
-              </div>
-              {p.popular && (
-                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#C97D7D] to-[#8B3D52] flex items-center justify-center">
-                  <Check className="w-3.5 h-3.5 text-[#FFFAF5]" strokeWidth={3} />
-                </div>
-              )}
-            </button>
-          ))}
+                {p.popular && (
+                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#C97D7D] to-[#8B3D52] flex items-center justify-center">
+                    <Check className="w-3.5 h-3.5 text-[#FFFAF5]" strokeWidth={3} />
+                  </div>
+                )}
+              </button>
+            );
+          })}
         </div>
 
         {/* Inline error */}
@@ -172,16 +234,16 @@ export function PaywallScreen() {
         {/* Continue free */}
         <button
           onClick={dismissPaywall}
-          disabled={busyProduct !== null || restoring}
+          disabled={anyBusy}
           className="text-sm bg-gradient-to-br from-[#C97D7D] to-[#8B3D52] bg-clip-text text-transparent hover:opacity-80 font-medium transition-opacity cursor-pointer mb-4 disabled:opacity-40 disabled:cursor-not-allowed"
         >
-          Continue with limited free version
+          Continue with free version
         </button>
 
         {/* Restore */}
         <button
           onClick={handleRestore}
-          disabled={busyProduct !== null || restoring}
+          disabled={anyBusy}
           className="text-xs text-[#A88894] hover:text-[#7A5560] transition-colors cursor-pointer mb-6 disabled:opacity-40 disabled:cursor-wait"
         >
           {restoring ? 'Restoring…' : 'Restore Purchases'}

@@ -4,38 +4,40 @@
   "platforms": ["ios", "android"],
   "entitlements": {
     "premium": {
-      "description": "Unlocks unlimited tracking, clean exports, premium templates, doctor PDF export",
+      "description": "Unlocks unlimited history, doctor-ready PDF exports, correlation reports, cross-symptom analytics, data backup, and the ad-free experience",
       "products": [
-        "com.gnosis.endopath.annual",
-        "com.gnosis.endopath.monthly"
+        "com.gnosis.endopath.pro.annual",
+        "com.gnosis.endopath.pro.monthly"
       ]
     }
   },
   "products": [
     {
-      "id": "com.gnosis.endopath.annual",
+      "id": "com.gnosis.endopath.pro.annual",
       "type": "AUTO_RENEWABLE_SUBSCRIPTION",
-      "display_name": "Annual Premium",
-      "price_tier_usd": 70.00,
+      "display_name": "Endopath Pro — Annual",
+      "price_tier_aud": 69.0,
       "subscription_period": "P1Y",
       "currency_localizations": {
-        "USD": "$70.00/yr",
-        "BRL": "R$349.90/ano",
-        "EUR": "€64.99/año",
-        "GBP": "£59.99/yr"
+        "AUD": "$69.00/yr",
+        "USD": "$45.99/yr",
+        "GBP": "£35.99/yr",
+        "EUR": "€42.99/yr",
+        "BRL": "R$229.90/ano"
       }
     },
     {
-      "id": "com.gnosis.endopath.monthly",
+      "id": "com.gnosis.endopath.pro.monthly",
       "type": "AUTO_RENEWABLE_SUBSCRIPTION",
-      "display_name": "Monthly Premium",
-      "price_tier_usd": 6.99,
+      "display_name": "Endopath Pro — Monthly",
+      "price_tier_aud": 9.99,
       "subscription_period": "P1M",
       "currency_localizations": {
+        "AUD": "$9.99/mo",
         "USD": "$6.99/mo",
-        "BRL": "R$34.90/mes",
-        "EUR": "€6.49/mes",
-        "GBP": "£5.99/mo"
+        "GBP": "£5.49/mo",
+        "EUR": "€5.99/mo",
+        "BRL": "R$34.90/mes"
       }
     }
   ],
@@ -44,28 +46,36 @@
       "id": "default",
       "description": "Standard paywall offering shown to new users",
       "products": [
-        "com.gnosis.endopath.annual",
-        "com.gnosis.endopath.monthly"
+        "com.gnosis.endopath.pro.annual",
+        "com.gnosis.endopath.pro.monthly"
       ],
-      "display_order": ["annual", "monthly"],
-      "default_selection": "annual"
+      "display_order": ["pro.annual", "pro.monthly"],
+      "default_selection": "pro.annual"
     }
   ],
+  "trial": {
+    "description": "14-day full Pro trial, granted client-side. No card required, no auto-conversion at trial end — user must explicitly subscribe.",
+    "duration_days": 14,
+    "scope": "device",
+    "mechanism": "local_state",
+    "rationale": "RevenueCat introductory offers require billing setup up-front on Google Play. We deliver a no-card trial by tracking trialEndsAt locally in IndexedDB and treating it as effective Pro for feature gating; entitlement on the RevenueCat side is unaffected and trial end produces no auto-charge."
+  },
   "paywall_config": {
     "placement": "onboarding_step3",
-    "headline": "Unlock Full Access",
-    "subheadline": "Track without limits. Export clean reports. Share your story.",
+    "headline": "Endopath Pro",
+    "subheadline": "Unlimited history, doctor-ready exports, and pattern insights to take to your specialist.",
     "features": [
-      "Unlimited symptom & flare tracking",
-      "12-month flare pattern analysis",
-      "Clean share cards (no watermark)",
+      "Unlimited cycle & symptom history",
       "Doctor-ready PDF exports",
-      "All premium templates",
-      "Full privacy — data stays on device"
+      "Cycle & symptom correlation reports",
+      "Cross-symptom analytics",
+      "Data backup & restore",
+      "Ad-free experience"
     ],
-    "social_proof": "💜 Trusted by endo warriors worldwide · 4.9★",
+    "social_proof": "Trusted by endo warriors worldwide · 4.9★",
     "show_restore_button": true,
-    "show_free_continue": true
+    "show_free_continue": true,
+    "show_trial_cta": true
   },
   "cross_promo_cluster": {
     "cluster": "A",

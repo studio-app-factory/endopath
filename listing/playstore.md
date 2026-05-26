@@ -29,9 +29,9 @@ KEY FEATURES:
 • Shareable PDF summaries for appointments with your specialist
 • No streaks, no scores, no shame — just your record
 
-Endopath Pro unlocks unlimited history, full PDF export, and advanced pattern insights — a one-time decision, not a subscription trap.
+Endopath Pro unlocks unlimited history, doctor-ready PDF exports, cycle and symptom correlation reports, cross-symptom analytics, data backup and restore, and an ad-free experience. $69 AUD/year or $9.99 AUD/month. Start with a 14-day free trial — no card required, no auto-conversion.
 
-All data is stored locally on your device. We don't run advertising, we don't sell data, we don't ask for your name. Endometriosis is private — your tracker should be too.
+All data is stored locally on your device. We don't sell data and we don't ask for your name. Endometriosis is private — your tracker should be too.
 
 Endopath is not a medical device and does not provide diagnosis or treatment. Always work with your clinician for medical decisions.
 

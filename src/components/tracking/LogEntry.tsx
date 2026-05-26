@@ -72,8 +72,7 @@ const CYCLE_PHASES: Array<{ id: CyclePhase; label: string }> = [
 ];
 
 export function LogEntry() {
-  const { setScreen, isPremium, incrementTrialEntries, trialEntriesRemaining, triggerPaywall } =
-    useStore();
+  const setScreen = useStore((s) => s.setScreen);
 
   const [painLevel, setPainLevel] = useState(5);
   const [selectedSymptoms, setSelectedSymptoms] = useState<Set<SymptomType>>(new Set());
@@ -108,14 +107,7 @@ export function LogEntry() {
   };
 
   const handleSave = useCallback(async () => {
-    if (!isPremium) {
-      const canLog = incrementTrialEntries();
-      if (!canLog) {
-        triggerPaywall('feature_limit_reached');
-        return;
-      }
-    }
-
+    // Symptom logging is fully free under the freemium model — no cap, no gate.
     setSaving(true);
     const now = new Date();
     const isFlare = painLevel >= 7 || (painLevel >= 5 && painLocations.length >= 2);
@@ -175,9 +167,6 @@ export function LogEntry() {
     intercoursePain,
     intercoursePainLevel,
     notes,
-    isPremium,
-    incrementTrialEntries,
-    triggerPaywall,
     setScreen,
   ]);
 
@@ -218,12 +207,6 @@ export function LogEntry() {
         <h2 className="text-3xl font-semibold text-[#3D1A24] font-['Cormorant_Garamond'] tracking-tight">
           Log Your Symptoms
         </h2>
-        {!isPremium && (
-          <p className="text-xs text-[#A88894]">
-            {trialEntriesRemaining} free{' '}
-            {trialEntriesRemaining === 1 ? 'entry' : 'entries'} remaining
-          </p>
-        )}
       </div>
 
       {/* Pain Level */}

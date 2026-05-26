@@ -109,12 +109,23 @@ Events are stored locally and flushed to Mixpanel in production.
 
 ## 💰 Monetization
 
-- **Annual**: $70/yr USD (`com.gnosis.endopath.annual`)
-- **Monthly**: $6.99/mo USD (`com.gnosis.endopath.monthly`)
+Freemium with a 14-day Pro trial.
 
-Free tier: 10 entries OR 7-day trial (whichever provides higher value demo).
+**Free tier (permanent, no cap):**
+- Body pain map (full)
+- Symptom logging (full)
+- Cycle / period logging (full)
+- Rolling 90-day history window (older data preserved, hidden behind Pro gate)
+- No export functionality
 
-Paywall placed on onboarding screen 3-4 (after value experience).
+**Endopath Pro:**
+- $69 AUD/year (`com.gnosis.endopath.pro.annual`)
+- $9.99 AUD/month (`com.gnosis.endopath.pro.monthly`)
+- Unlimited history, doctor-ready PDF exports, cycle/symptom correlation reports, cross-symptom analytics, data backup & restore, ad-free experience
+
+**14-day free trial:** one-shot per device, no card, no auto-conversion. Tracked locally as `trialEndsAt` in IndexedDB (`UserProfile`); the trial grants effective-Pro for gating but does not touch RevenueCat.
+
+Paywall is placed at onboarding step 3 and on every Pro feature lock (settings upgrade, share export, history gate beyond 90 days, analytics gates).
 
 ### Billing (RevenueCat)
 
