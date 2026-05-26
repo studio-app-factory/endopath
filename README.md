@@ -188,6 +188,18 @@ git push origin v1.0.0
 Then promote the draft in Play Console after filling Data Safety + content
 rating questionnaires.
 
+### Legal documents (hosted on GitHub Pages)
+
+`listing/privacy.html` and `listing/terms.html` are auto-published to
+GitHub Pages by `.github/workflows/publish-legal-docs.yml` on any change.
+Use these public HTTPS URLs in Play Console and App Store Connect:
+
+- Privacy Policy: `https://studio-app-factory.github.io/endopath/privacy.html`
+- Terms of Service: `https://studio-app-factory.github.io/endopath/terms.html`
+
+After the first deploy, enable Pages in repo Settings → Pages → Source:
+**GitHub Actions** (one-time setup).
+
 ## 📋 App Store Metadata
 
 See `/metadata/` directory for:
