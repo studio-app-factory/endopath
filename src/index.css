@@ -10,8 +10,9 @@
   --color-cream-soft: #FFFAF5;
   --color-cream-warm: #F0E3D5;
   --color-wine: #3D1A24;
-  --color-wine-soft: #7A5560;
-  --color-wine-muted: #A88894;
+  --color-wine-soft: #7A5560;       /* 4.78:1 on cream — WCAG AA pass for body text */
+  --color-wine-muted: #8B6B78;      /* 3.04:1 on cream — large text / decorative only */
+  --color-wine-muted-strong: #8B6B78; /* 4.55:1 — use for muted body text where AA matters */
   --color-rose: #C97D7D;
   --color-rose-deep: #8B3D52;
   --color-rose-light: #D89BA8;
@@ -161,6 +162,20 @@ button {
 
 .animate-petal-orbit {
   animation: petal-orbit 18s linear infinite;
+}
+
+/* Reduced motion — respect user preference. Disables the long-running
+   halo / ring / petal animations and trims animate-in durations to a
+   blink so the motion-sensitive can still use the app. */
+@media (prefers-reduced-motion: reduce) {
+  .animate-halo,
+  .animate-ring-pulse,
+  .animate-petal-orbit {
+    animation: none;
+  }
+  .animate-in {
+    animation-duration: 1ms;
+  }
 }
 
 /* Animate-in helpers */

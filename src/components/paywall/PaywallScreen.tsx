@@ -244,7 +244,7 @@ export function PaywallScreen() {
         <button
           onClick={handleRestore}
           disabled={anyBusy}
-          className="text-xs text-[#A88894] hover:text-[#7A5560] transition-colors cursor-pointer mb-6 disabled:opacity-40 disabled:cursor-wait"
+          className="text-xs text-[#8B6B78] hover:text-[#7A5560] transition-colors cursor-pointer mb-6 disabled:opacity-40 disabled:cursor-wait"
         >
           {restoring ? 'Restoring…' : 'Restore Purchases'}
         </button>

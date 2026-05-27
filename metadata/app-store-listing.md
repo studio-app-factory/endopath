@@ -11,8 +11,8 @@ Use these answers when filling App Store Connect → App Privacy.
 | Purchases (subscription status) | App functionality | Via Apple StoreKit + RevenueCat |
 | Identifiers — Device ID, IDFA | Third-Party Advertising | Free tier only, only if user grants ATT permission AND accepts in-app consent. Pro/trial users: not collected. |
 | Coarse Location | Third-Party Advertising | Derived from IP by AdMob. Free tier only, with consent. |
-| Diagnostics — Crash data | App functionality | Sentry, no health data. |
-| Usage Data — Product interaction | Analytics | Mixpanel, anonymous device ID, no health data. |
+| Diagnostics — Crash data | n/a | Not collected — no crash reporting SDK is bundled. |
+| Usage Data — Product interaction | n/a | Not collected — usage events live in on-device storage only. |
 
 ### Data Not Linked to You
 

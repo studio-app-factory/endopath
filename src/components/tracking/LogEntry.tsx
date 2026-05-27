@@ -87,6 +87,7 @@ export function LogEntry() {
   const [notes, setNotes] = useState('');
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   const toggleSymptom = (id: SymptomType) => {
     setSelectedSymptoms((prev) => {
@@ -151,7 +152,12 @@ export function LogEntry() {
         setScreen('home');
       }, 1200);
     } catch (e) {
-      // Handle error
+      console.error('[LogEntry] save failed', e);
+      const msg =
+        e instanceof Error && e.name === 'QuotaExceededError'
+          ? 'Your device is out of storage. Free some space and try again.'
+          : 'Couldn\'t save this entry. Please try again — your work is still on screen.';
+      setSaveError(msg);
     } finally {
       setSaving(false);
     }
@@ -213,7 +219,7 @@ export function LogEntry() {
       <div className="bg-[#FFFAF5] rounded-3xl p-5 border border-[#E8D5CC]/70">
         <div className="flex items-center justify-between mb-3">
           <p className="text-sm font-medium text-[#3D1A24]/85">Pain Level</p>
-          <span className="text-[10px] font-mono text-[#A88894] uppercase tracking-wider">
+          <span className="text-[10px] font-mono text-[#8B6B78] uppercase tracking-wider">
             0–10 scale
           </span>
         </div>
@@ -231,7 +237,7 @@ export function LogEntry() {
             {painLevel}
           </span>
         </div>
-        <div className="flex justify-between text-[10px] text-[#A88894]/75 px-1 uppercase tracking-wider">
+        <div className="flex justify-between text-[10px] text-[#8B6B78]/75 px-1 uppercase tracking-wider">
           <span>Mild</span>
           <span>Moderate</span>
           <span>Severe</span>
@@ -331,7 +337,7 @@ export function LogEntry() {
                 onClick={() => setCyclePhase(ph.id)}
                 className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
                   cyclePhase === ph.id
-                    ? 'bg-gradient-to-br from-[#A88894] to-[#8B3D52] text-[#FFFAF5]'
+                    ? 'bg-gradient-to-br from-[#8B6B78] to-[#8B3D52] text-[#FFFAF5]'
                     : 'bg-[#3D1A24]/5 text-[#7A5560] border border-[#E8D5CC]/70 hover:bg-[#3D1A24]/7'
                 }`}
               >
@@ -345,7 +351,7 @@ export function LogEntry() {
       {/* Sleep */}
       <div className="bg-[#FFFAF5] rounded-3xl p-5 border border-[#E8D5CC]/70 space-y-3">
         <div className="flex items-center gap-2">
-          <Moon className="w-4 h-4 text-[#A88894]" strokeWidth={1.8} />
+          <Moon className="w-4 h-4 text-[#8B6B78]" strokeWidth={1.8} />
           <p className="text-sm font-medium text-[#3D1A24]/85">Sleep</p>
         </div>
         <div className="flex gap-4 items-end">
@@ -361,7 +367,7 @@ export function LogEntry() {
                 setSleepHours(e.target.value ? Number(e.target.value) : undefined)
               }
               placeholder="7.5"
-              className="w-full px-3 py-2.5 rounded-xl border border-[#E8D5CC] text-sm text-[#3D1A24] bg-[#3D1A24]/5 placeholder:text-[#A88894]/70 focus:outline-none focus:border-[#C97D7D]/50"
+              className="w-full px-3 py-2.5 rounded-xl border border-[#E8D5CC] text-sm text-[#3D1A24] bg-[#3D1A24]/5 placeholder:text-[#8B6B78]/70 focus:outline-none focus:border-[#C97D7D]/50"
             />
           </div>
           <div className="flex-1">
@@ -430,9 +436,19 @@ export function LogEntry() {
           onChange={(e) => setNotes(e.target.value)}
           placeholder="Anything else? Diet, weather, triggers..."
           rows={3}
-          className="w-full px-3 py-2.5 rounded-xl border border-[#E8D5CC] text-sm text-[#3D1A24] bg-[#3D1A24]/5 placeholder:text-[#A88894]/70 focus:outline-none focus:border-[#C97D7D]/50 resize-none"
+          className="w-full px-3 py-2.5 rounded-xl border border-[#E8D5CC] text-sm text-[#3D1A24] bg-[#3D1A24]/5 placeholder:text-[#8B6B78]/70 focus:outline-none focus:border-[#C97D7D]/50 resize-none"
         />
       </div>
+
+      {/* Save error (shown when Dexie write fails) */}
+      {saveError && (
+        <div
+          role="alert"
+          className="px-4 py-2.5 rounded-xl bg-[#C97D7D]/10 border border-[#C97D7D]/30 text-xs text-[#8B3D52] text-center"
+        >
+          {saveError}
+        </div>
+      )}
 
       {/* Save */}
       <Button
@@ -445,6 +461,11 @@ export function LogEntry() {
           <>
             <Loader2 className="w-4 h-4 animate-spin" />
             Saving...
+          </>
+        ) : saved ? (
+          <>
+            <Sparkles className="w-4 h-4" />
+            Saved
           </>
         ) : (
           <>

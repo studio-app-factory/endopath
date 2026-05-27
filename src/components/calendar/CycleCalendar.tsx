@@ -115,7 +115,7 @@ export function CycleCalendar() {
         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((d) => (
           <div
             key={d}
-            className="text-[10px] font-semibold text-[#A88894] uppercase tracking-[0.16em] py-2"
+            className="text-[10px] font-semibold text-[#8B6B78] uppercase tracking-[0.16em] py-2"
           >
             {d}
           </div>
@@ -198,7 +198,7 @@ export function CycleCalendar() {
           </div>
 
           {selectedEntries.length === 0 ? (
-            <p className="text-sm text-[#A88894] text-center py-4">
+            <p className="text-sm text-[#8B6B78] text-center py-4">
               No entries for this day.
             </p>
           ) : (
@@ -232,7 +232,7 @@ export function CycleCalendar() {
                       .join(', ')}
                   </p>
                   {entry.notes && (
-                    <p className="text-xs text-[#A88894] mt-1 italic">{entry.notes}</p>
+                    <p className="text-xs text-[#8B6B78] mt-1 italic">{entry.notes}</p>
                   )}
                 </div>
               ))}

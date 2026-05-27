@@ -2,30 +2,84 @@
 // ENDOPATH — Settings, Privacy, Data Export
 // ============================================================
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import {
   ChevronDown,
+  CloudUpload,
+  Download,
   FileText,
+  LineChart,
+  Lock,
   ShieldCheck,
   Sprout,
   AlertTriangle,
   Heart,
   Sparkles,
+  Upload,
 } from 'lucide-react';
 import { useStore, useIsEffectivePro, useTrialDaysLeft } from '@/lib/store';
 import { Button } from '@/components/ui/Button';
 import { getDB, getEntriesInRange } from '@/lib/db';
 import { generateDoctorPDF } from '@/lib/pdf-export';
+import { downloadBackup, importBackupFile, type BackupSummary } from '@/lib/backup';
 import type { ExportConfig, ExportSection } from '@/types';
 
 export function SettingsScreen() {
   const isPremium = useStore((s) => s.isPremium);
   const triggerPaywall = useStore((s) => s.triggerPaywall);
+  const setScreen = useStore((s) => s.setScreen);
   const adsConsent = useStore((s) => s.adsConsent);
   const setAdsConsent = useStore((s) => s.setAdsConsent);
   const isEffectivePro = useIsEffectivePro();
   const trialDaysLeft = useTrialDaysLeft();
   const [showExport, setShowExport] = useState(false);
+  const [backupBusy, setBackupBusy] = useState<'export' | 'import' | null>(null);
+  const [backupMessage, setBackupMessage] = useState<string | null>(null);
+  const [backupError, setBackupError] = useState<string | null>(null);
+  const importInputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleBackupExport = async () => {
+    if (!isEffectivePro) {
+      triggerPaywall('backup_locked');
+      return;
+    }
+    setBackupError(null);
+    setBackupMessage(null);
+    setBackupBusy('export');
+    try {
+      await downloadBackup();
+      setBackupMessage('Backup downloaded. Keep the file somewhere safe — anyone with it can restore your data.');
+    } catch (e) {
+      setBackupError(e instanceof Error ? e.message : 'Backup failed.');
+    } finally {
+      setBackupBusy(null);
+    }
+  };
+
+  const handleBackupImportClick = () => {
+    if (!isEffectivePro) {
+      triggerPaywall('backup_locked');
+      return;
+    }
+    importInputRef.current?.click();
+  };
+
+  const handleBackupImportFile = async (file: File | undefined) => {
+    if (!file) return;
+    setBackupError(null);
+    setBackupMessage(null);
+    setBackupBusy('import');
+    try {
+      const summary = await importBackupFile(file);
+      setBackupMessage(backupSummaryText(summary));
+    } catch (e) {
+      setBackupError(e instanceof Error ? e.message : 'Restore failed.');
+    } finally {
+      setBackupBusy(null);
+      // Reset input so the user can re-pick the same file if needed.
+      if (importInputRef.current) importInputRef.current.value = '';
+    }
+  };
   const [exporting, setExporting] = useState(false);
   const [exportStart, setExportStart] = useState(() => {
     const d = new Date();
@@ -158,7 +212,7 @@ export function SettingsScreen() {
             </div>
           </div>
           <ChevronDown
-            className={`w-4 h-4 text-[#A88894] transition-transform ${
+            className={`w-4 h-4 text-[#8B6B78] transition-transform ${
               showExport ? 'rotate-180' : ''
             }`}
           />
@@ -228,14 +282,15 @@ export function SettingsScreen() {
       {/* Privacy */}
       <div className="p-5 rounded-3xl bg-[#FFFAF5] border border-[#E8D5CC]/70 space-y-3">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#A88894]/15 to-[#8B3D52]/12 border border-[#A88894]/20 flex items-center justify-center">
-            <ShieldCheck className="w-5 h-5 text-[#A88894]" strokeWidth={1.8} />
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#8B6B78]/15 to-[#8B3D52]/12 border border-[#8B6B78]/20 flex items-center justify-center">
+            <ShieldCheck className="w-5 h-5 text-[#8B6B78]" strokeWidth={1.8} />
           </div>
           <p className="font-semibold text-[#3D1A24] text-sm">Privacy & Data</p>
         </div>
         <p className="text-xs text-[#7A5560]/85 leading-relaxed">
           All your data is stored locally on your device. Nothing is sent to the cloud. Your
-          symptom history, pain maps, and cycle data are encrypted at rest.
+          symptom history, pain maps, and cycle data live only in your device's app storage —
+          protected by your device passcode and biometrics.
         </p>
 
         {/* Ads consent toggle — only shown to free users; Pro users have no ads */}
@@ -283,6 +338,84 @@ export function SettingsScreen() {
         </div>
       </div>
 
+      {/* Pattern insights (Pro) */}
+      <button
+        onClick={() => (isEffectivePro ? setScreen('insights') : triggerPaywall('analytics_locked'))}
+        className="w-full p-5 rounded-3xl bg-[#FFFAF5] border border-[#E8D5CC]/70 hover:bg-[#3D1A24]/6 transition-colors cursor-pointer flex items-center justify-between text-left"
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#C97D7D]/20 to-[#8B3D52]/20 border border-[#D89BA8]/15 flex items-center justify-center">
+            <LineChart className="w-5 h-5 text-[#8B3D52]" strokeWidth={1.8} />
+          </div>
+          <div>
+            <p className="font-semibold text-[#3D1A24] text-sm">Pattern Insights</p>
+            <p className="text-xs text-[#7A5560]/85 mt-0.5">
+              Cycle correlations · cross-symptom analytics
+            </p>
+          </div>
+        </div>
+        {!isEffectivePro && <Lock className="w-4 h-4 text-[#8B6B78]" strokeWidth={2} />}
+      </button>
+
+      {/* Data backup & restore (Pro) */}
+      <div className="p-5 rounded-3xl bg-[#FFFAF5] border border-[#E8D5CC]/70 space-y-3">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#C97D7D]/20 to-[#8B3D52]/20 border border-[#D89BA8]/15 flex items-center justify-center">
+            <CloudUpload className="w-5 h-5 text-[#8B3D52]" strokeWidth={1.8} />
+          </div>
+          <div className="flex-1">
+            <p className="font-semibold text-[#3D1A24] text-sm">Data Backup &amp; Restore</p>
+            <p className="text-xs text-[#7A5560]/85 mt-0.5">
+              Save a copy of your entries to a file, or import one from another device.
+            </p>
+          </div>
+          {!isEffectivePro && <Lock className="w-4 h-4 text-[#8B6B78]" strokeWidth={2} />}
+        </div>
+
+        {isEffectivePro && (
+          <div className="flex gap-2 pt-1">
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={handleBackupExport}
+              disabled={backupBusy !== null}
+              className="flex-1"
+            >
+              <Download className="w-3.5 h-3.5" strokeWidth={2} />
+              {backupBusy === 'export' ? 'Exporting…' : 'Export'}
+            </Button>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={handleBackupImportClick}
+              disabled={backupBusy !== null}
+              className="flex-1"
+            >
+              <Upload className="w-3.5 h-3.5" strokeWidth={2} />
+              {backupBusy === 'import' ? 'Restoring…' : 'Restore'}
+            </Button>
+            <input
+              ref={importInputRef}
+              type="file"
+              accept="application/json,.json"
+              className="hidden"
+              onChange={(e) => handleBackupImportFile(e.target.files?.[0])}
+            />
+          </div>
+        )}
+
+        {backupMessage && (
+          <p className="text-[11px] text-[#8B3D52] bg-[#EFD3DA]/40 border border-[#D89BA8]/40 rounded-xl px-3 py-2">
+            {backupMessage}
+          </p>
+        )}
+        {backupError && (
+          <p className="text-[11px] text-[#8B3D52] bg-[#C97D7D]/10 border border-[#C97D7D]/30 rounded-xl px-3 py-2">
+            {backupError}
+          </p>
+        )}
+      </div>
+
       {/* Cross-promo */}
       <button
         onClick={() => useStore.getState().openCrossPromo()}
@@ -315,11 +448,22 @@ export function SettingsScreen() {
       </div>
 
       {/* App info */}
-      <p className="text-center text-[10px] text-[#A88894]/75 inline-flex items-center gap-1 justify-center w-full">
+      <p className="text-center text-[10px] text-[#8B6B78]/75 inline-flex items-center gap-1 justify-center w-full">
         Endopath v1.0 · Made with{' '}
         <Heart className="inline w-3 h-3 text-[#8B3D52] mx-0.5" fill="currentColor" strokeWidth={0} />{' '}
         for endo warriors
       </p>
     </div>
   );
+}
+
+function backupSummaryText(s: BackupSummary): string {
+  const parts: string[] = [];
+  if (s.symptomEntries) parts.push(`${s.symptomEntries} entries`);
+  if (s.cycleRecords) parts.push(`${s.cycleRecords} cycle records`);
+  if (s.medicationLogs) parts.push(`${s.medicationLogs} medications`);
+  if (s.surgeryLogs) parts.push(`${s.surgeryLogs} surgery records`);
+  const summary = parts.length ? parts.join(', ') : 'no records';
+  const range = s.earliestDate && s.latestDate ? ` (${s.earliestDate} → ${s.latestDate})` : '';
+  return `Restored ${summary}${range}.`;
 }

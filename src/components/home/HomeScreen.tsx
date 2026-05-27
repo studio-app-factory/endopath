@@ -51,15 +51,24 @@ export function HomeScreen() {
     const todayEntry = await db.symptomEntries.where('date').equals(today).first();
     setTodayPain(todayEntry?.painLevel ?? null);
 
-    // Streak
+    // Streak — one range query, in-memory walk. Previously this loop ran
+    // 365 sequential Dexie .count() round-trips on every Home mount, which
+    // measurably stalls cold-load on low-end Android.
+    const yearAgo = new Date();
+    yearAgo.setFullYear(yearAgo.getFullYear() - 1);
+    const yearAgoStr = yearAgo.toISOString().split('T')[0];
+    const recentYear = await db.symptomEntries
+      .where('date')
+      .aboveOrEqual(yearAgoStr)
+      .toArray();
+    const datesWithEntries = new Set(recentYear.map((e) => e.date));
     let streak = 0;
-    const d = new Date();
+    const cursor = new Date();
     for (let i = 0; i < 365; i++) {
-      const dateStr = d.toISOString().split('T')[0];
-      const entry = await db.symptomEntries.where('date').equals(dateStr).count();
-      if (entry > 0) streak++;
+      const dateStr = cursor.toISOString().split('T')[0];
+      if (datesWithEntries.has(dateStr)) streak++;
       else break;
-      d.setDate(d.getDate() - 1);
+      cursor.setDate(cursor.getDate() - 1);
     }
     setStreakDays(streak);
 
@@ -87,7 +96,7 @@ export function HomeScreen() {
           <h1 className="text-4xl font-semibold text-[#3D1A24] font-['Cormorant_Garamond'] tracking-tight">
             Endopath
           </h1>
-          <p className="text-xs text-[#A88894] mt-1 uppercase tracking-[0.18em] font-medium">
+          <p className="text-xs text-[#8B6B78] mt-1 uppercase tracking-[0.18em] font-medium">
             {new Date().toLocaleDateString('en', {
               weekday: 'long',
               month: 'long',
@@ -159,7 +168,7 @@ export function HomeScreen() {
           <p className="text-3xl font-bold text-[#3D1A24] font-['Cormorant_Garamond']">
             {todayPain ?? '—'}
           </p>
-          <p className="text-[10px] text-[#A88894] mt-1 uppercase tracking-[0.14em]">
+          <p className="text-[10px] text-[#8B6B78] mt-1 uppercase tracking-[0.14em]">
             Pain
           </p>
         </div>
@@ -167,7 +176,7 @@ export function HomeScreen() {
           <p className="text-3xl font-bold bg-gradient-to-br from-[#C97D7D] to-[#8B3D52] bg-clip-text text-transparent font-['Cormorant_Garamond']">
             {flareCount}
           </p>
-          <p className="text-[10px] text-[#A88894] mt-1 uppercase tracking-[0.14em]">
+          <p className="text-[10px] text-[#8B6B78] mt-1 uppercase tracking-[0.14em]">
             Flares /mo
           </p>
         </div>
@@ -175,7 +184,7 @@ export function HomeScreen() {
           <p className="text-3xl font-bold text-[#3D1A24] font-['Cormorant_Garamond']">
             {streakDays}
           </p>
-          <p className="text-[10px] text-[#A88894] mt-1 uppercase tracking-[0.14em]">
+          <p className="text-[10px] text-[#8B6B78] mt-1 uppercase tracking-[0.14em]">
             Streak
           </p>
         </div>
@@ -197,8 +206,8 @@ export function HomeScreen() {
           onClick={() => setScreen('shareable')}
           className="flex items-center gap-3 p-4 rounded-2xl bg-[#FFFAF5] border border-[#E8D5CC]/70 hover:bg-[#3D1A24]/6 transition-all cursor-pointer"
         >
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#A88894]/15 to-[#8B3D52]/12 border border-[#A88894]/20 flex items-center justify-center">
-            <Share2 className="w-5 h-5 text-[#A88894]" strokeWidth={1.8} />
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#8B6B78]/15 to-[#8B3D52]/12 border border-[#8B6B78]/20 flex items-center justify-center">
+            <Share2 className="w-5 h-5 text-[#8B6B78]" strokeWidth={1.8} />
           </div>
           <div className="text-left">
             <p className="font-semibold text-sm text-[#3D1A24]">Share Card</p>
@@ -221,8 +230,8 @@ export function HomeScreen() {
           onClick={() => setScreen('medications')}
           className="flex items-center gap-3 p-4 rounded-2xl bg-[#FFFAF5] border border-[#E8D5CC]/70 hover:bg-[#3D1A24]/6 transition-all cursor-pointer"
         >
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#A88894]/15 to-[#8B3D52]/12 border border-[#A88894]/20 flex items-center justify-center">
-            <Pill className="w-5 h-5 text-[#A88894]" strokeWidth={1.8} />
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#8B6B78]/15 to-[#8B3D52]/12 border border-[#8B6B78]/20 flex items-center justify-center">
+            <Pill className="w-5 h-5 text-[#8B6B78]" strokeWidth={1.8} />
           </div>
           <div className="text-left">
             <p className="font-semibold text-sm text-[#3D1A24]">Treatment</p>
@@ -234,7 +243,7 @@ export function HomeScreen() {
       {/* Recent entries */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-[11px] font-semibold text-[#A88894] uppercase tracking-[0.18em]">
+          <h3 className="text-[11px] font-semibold text-[#8B6B78] uppercase tracking-[0.18em]">
             Recent Entries
           </h3>
           {recentEntries.length > 0 && (
@@ -291,7 +300,7 @@ export function HomeScreen() {
                       )
                       .join(', ') || 'Logged'}
                   </p>
-                  <p className="text-xs text-[#A88894] flex items-center gap-1.5">
+                  <p className="text-xs text-[#8B6B78] flex items-center gap-1.5">
                     {formatDate(entry.date)}
                     {entry.isFlare && (
                       <span className="inline-flex items-center gap-1 text-[#8B3D52]">
@@ -300,7 +309,7 @@ export function HomeScreen() {
                     )}
                   </p>
                 </div>
-                <div className="text-[10px] text-[#A88894]/80 font-mono">
+                <div className="text-[10px] text-[#8B6B78]/80 font-mono">
                   {entry.timestamp.slice(11, 16)}
                 </div>
               </div>

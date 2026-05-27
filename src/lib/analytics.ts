@@ -1,7 +1,12 @@
 // ============================================================
-// ENDOPATH — Analytics Layer
-// Mixpanel-compatible event tracking (local-first, no IDFA)
-// Events are stored locally and can be flushed to Mixpanel
+// ENDOPATH — Local analytics
+//
+// Events are stored locally in IndexedDB and never transmitted off the
+// device. This file's job is to keep a queryable on-device log of what
+// the user did (paywall_viewed, flare_logged, ads_consent_accepted, …)
+// so debug screens and Pro reports can use it later — NOT to push to a
+// third-party tracker. Privacy policy and Data Safety form must match
+// this stance.
 // ============================================================
 
 import { getDB } from './db';
@@ -18,7 +23,7 @@ function getUserId(): string {
   return userId;
 }
 
-// Track an event (local-first, queue for server flush)
+/** Record an event in the on-device log. Never transmitted off-device. */
 export function track(
   event: PortfolioEvent,
   params: Record<string, string | number | boolean | string[]> = {},
@@ -27,48 +32,32 @@ export function track(
   const id = crypto.randomUUID();
   const timestamp = new Date().toISOString();
 
-  // Store locally
-  db.analyticsEvents.put({
-    id,
-    event,
-    timestamp,
-    params: {
-      ...params,
-      session_id: sessionId,
-      user_id: getUserId(),
-      app_id: 'endopath',
-      platform: 'web',
-    },
-  }).catch(() => {}); // Silently fail — analytics are best-effort
-
-  // In production, this would flush to Mixpanel via their SDK
-  if (import.meta.env.PROD && typeof navigator.sendBeacon === 'function') {
-    const payload = JSON.stringify({
+  db.analyticsEvents
+    .put({
+      id,
       event,
-      properties: {
+      timestamp,
+      params: {
         ...params,
         session_id: sessionId,
-        distinct_id: getUserId(),
+        user_id: getUserId(),
         app_id: 'endopath',
-        platform: 'web',
-        time: Math.floor(Date.now() / 1000),
+        platform: 'local',
       },
+    })
+    .catch(() => {
+      // Best-effort: if Dexie write fails we don't want to break the
+      // user-facing flow that triggered the event.
     });
-    // Replace with actual Mixpanel ingest endpoint in production
-    navigator.sendBeacon('https://api.mixpanel.com/track', payload);
-  }
 
-  // Log in development
   if (import.meta.env.DEV) {
     console.log(`[Analytics] ${event}`, params);
   }
 }
 
-// Identify user properties
-export function identify(properties: Record<string, string | number | boolean | string[]>): void {
-  if (import.meta.env.DEV) {
-    console.log('[Analytics] identify', properties);
-  }
+/** No-op: kept for future use if we ever wire a real provider. */
+export function identify(_properties: Record<string, string | number | boolean | string[]>): void {
+  // Intentionally empty — see file header.
 }
 
 // Start a new session

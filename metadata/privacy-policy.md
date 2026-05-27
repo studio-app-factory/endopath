@@ -48,11 +48,7 @@ AdMob is the only third-party SDK shipped with Endopath that touches device data
 ### RevenueCat (Purchases)
 RevenueCat processes in-app purchases. They receive your anonymous app user ID and purchase token. They do not receive health data. [RevenueCat Privacy Policy](https://www.revenuecat.com/privacy)
 
-### Mixpanel (Analytics)
-Mixpanel receives anonymous event data (e.g., "app opened", "entry logged") with a randomly generated device ID. No health data is included. No IDFA is used. [Mixpanel Privacy Policy](https://mixpanel.com/legal/privacy-policy)
-
-### Sentry (Crash Reporting)
-Sentry receives crash logs and technical diagnostic data to help us fix bugs. Crash logs may include the screen you were viewing when the crash occurred but do not include health data. [Sentry Privacy Policy](https://sentry.io/privacy)
+We do **not** ship a third-party analytics or crash reporting SDK. App-usage events are stored locally on your device and never transmitted off the device.
 
 ## Your Rights
 

@@ -288,6 +288,7 @@ export type AppScreen =
   | 'medications'
   | 'surgeries'
   | 'settings'
+  | 'insights'
   | 'paywall'
   | 'cross_promo';
 

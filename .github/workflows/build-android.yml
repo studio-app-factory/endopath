@@ -41,6 +41,12 @@ jobs:
       - name: Install web dependencies
         run: npm ci
 
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Run tests
+        run: npm test
+
       - name: Add Capacitor packages (if not already present)
         run: |
           if ! grep -q '"@capacitor/android"' package.json; then

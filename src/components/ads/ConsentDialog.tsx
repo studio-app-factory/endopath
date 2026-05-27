@@ -76,7 +76,7 @@ export function ConsentDialog() {
           (advertising ID, IP, approximate location). We don't share your
           symptom, cycle, or body-map data — that never leaves your device.
         </p>
-        <p className="text-xs text-[#A88894] mb-5 inline-flex items-start gap-1.5">
+        <p className="text-xs text-[#8B6B78] mb-5 inline-flex items-start gap-1.5">
           <Sparkles className="w-3.5 h-3.5 text-[#8B3D52] flex-shrink-0 mt-0.5" strokeWidth={2} />
           <span>
             Endopath Pro removes ads and unlocks unlimited history, doctor PDF
