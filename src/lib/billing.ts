@@ -103,13 +103,25 @@ export async function checkEntitlement(): Promise<boolean> {
 /**
  * Purchase the package whose RC product identifier matches productId.
  *
- * On web / no-key builds this is a mock that grants premium immediately
- * (so dev preview and the limited-free flow still work). In production
- * native builds this opens the platform's native purchase sheet.
+ * Behaviour:
+ *   - DEV (web / vite dev / no key)  → mock grants Pro so previews work.
+ *   - PROD on a native build WITH a configured API key → real RevenueCat
+ *     native purchase sheet.
+ *   - PROD on a native build WITHOUT a configured API key → refuse the
+ *     purchase with a clear error. This avoids the dev mock leaking
+ *     into release builds and granting Pro for free.
  */
 export async function purchaseProduct(productId: string): Promise<PurchaseResult> {
   if (!isBillingAvailable()) {
-    // Dev / web mock — grants entitlement so screenshots and previews work.
+    if (import.meta.env.PROD && Capacitor.isNativePlatform()) {
+      return {
+        success: false,
+        isPremium: false,
+        error:
+          'Purchases are temporarily unavailable. Please update the app or try again later.',
+      };
+    }
+    // Dev / web only — mock for previews and screenshot runs.
     return { success: true, isPremium: true };
   }
 
