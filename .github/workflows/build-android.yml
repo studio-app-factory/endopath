@@ -18,6 +18,12 @@ jobs:
     name: Build Android AAB
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    # Job-level env block so step-level `if:` expressions can reference
+    # secret-derived flags. GitHub Actions disallows `secrets.*` directly
+    # inside `if:`; deriving a boolean-ish string here is the supported
+    # workaround.
+    env:
+      HAS_PLAY_CREDS: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON != '' && 'true' || 'false' }}
 
     steps:
       - name: Checkout
@@ -215,8 +221,17 @@ jobs:
           path: android/app/build/outputs/bundle/release/*.aab
           retention-days: 30
 
+      # Tag-triggered Play Store upload. Skipped (not failed) when the
+      # service-account secret hasn't been set yet — that way every tag
+      # still produces a green build + signed AAB artifact, and the
+      # automated upload turns itself on once secrets land.
+      - name: Notice — Play Store upload skipped
+        if: startsWith(github.ref, 'refs/tags/') && env.HAS_PLAY_CREDS != 'true'
+        run: |
+          echo "::notice title=Play Store upload skipped::GOOGLE_PLAY_SERVICE_ACCOUNT_JSON secret not configured. The signed AAB is available as the 'android-release-aab' artifact above — upload it manually to Play Console for the first release, then add the service-account JSON as a repo secret to enable automated uploads on future tags."
+
       - name: Upload to Google Play (Internal Testing)
-        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') && env.HAS_PLAY_CREDS == 'true'
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}

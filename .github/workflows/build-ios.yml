@@ -10,8 +10,40 @@ on:
         type: boolean
 
 jobs:
+  # Quick precheck on a free Linux runner. If Apple Connect secrets aren't
+  # configured we exit 0 here and the expensive macOS build job is skipped
+  # entirely (shows as "skipped" rather than failed in the Actions UI).
+  preflight:
+    name: Preflight — check Apple credentials
+    runs-on: ubuntu-latest
+    outputs:
+      ready: ${{ steps.check.outputs.ready }}
+    steps:
+      - id: check
+        env:
+          APPSTORE_PRIVATE_KEY: ${{ secrets.APPSTORE_PRIVATE_KEY }}
+          APPSTORE_KEY_ID: ${{ secrets.APPSTORE_KEY_ID }}
+          APPSTORE_ISSUER_ID: ${{ secrets.APPSTORE_ISSUER_ID }}
+          IOS_DIST_CERT_BASE64: ${{ secrets.IOS_DIST_CERT_BASE64 }}
+          IOS_DIST_CERT_PASSWORD: ${{ secrets.IOS_DIST_CERT_PASSWORD }}
+        run: |
+          MISSING=""
+          [ -z "$APPSTORE_PRIVATE_KEY" ] && MISSING="$MISSING APPSTORE_PRIVATE_KEY"
+          [ -z "$APPSTORE_KEY_ID" ] && MISSING="$MISSING APPSTORE_KEY_ID"
+          [ -z "$APPSTORE_ISSUER_ID" ] && MISSING="$MISSING APPSTORE_ISSUER_ID"
+          [ -z "$IOS_DIST_CERT_BASE64" ] && MISSING="$MISSING IOS_DIST_CERT_BASE64"
+          [ -z "$IOS_DIST_CERT_PASSWORD" ] && MISSING="$MISSING IOS_DIST_CERT_PASSWORD"
+          if [ -n "$MISSING" ]; then
+            echo "::notice title=iOS build skipped::Apple Connect / signing secrets not configured. Missing:$MISSING"
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
   build:
     name: Build iOS IPA
+    needs: preflight
+    if: needs.preflight.outputs.ready == 'true'
     runs-on: macos-latest
     timeout-minutes: 60
 
@@ -27,6 +59,12 @@ jobs:
 
       - name: Install web dependencies
         run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Run tests
+        run: npm test
 
       - name: Add Capacitor packages (if not already present)
         run: |
