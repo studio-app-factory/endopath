@@ -23,6 +23,12 @@ pnpm-debug.log*
 coverage/
 .nyc_output/
 
+# Claude CLI workspace files — local-only IDE/launch state
+.claude/
+
+# Playwright test output
+test-results/
+
 # Capacitor / native platforms (generated in CI — do not commit)
 android/
 ios/
