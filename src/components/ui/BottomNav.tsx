@@ -14,7 +14,11 @@ const NAV_ITEMS: Array<{ screen: AppScreen; label: string; icon: LucideIcon }> =
 ];
 
 export function BottomNav() {
-  const { currentScreen, setScreen, isOnboarding, showPaywall, showCrossPromo } = useStore();
+  const currentScreen = useStore((s) => s.currentScreen);
+  const setScreen = useStore((s) => s.setScreen);
+  const isOnboarding = useStore((s) => s.isOnboarding);
+  const showPaywall = useStore((s) => s.showPaywall);
+  const showCrossPromo = useStore((s) => s.showCrossPromo);
 
   // Hide nav during onboarding, paywall, or cross-promo
   if (isOnboarding || showPaywall || showCrossPromo) return null;
@@ -36,7 +40,7 @@ export function BottomNav() {
               className={`flex flex-col items-center gap-1 py-3 px-3 min-w-[60px] transition-colors cursor-pointer ${
                 isActive
                   ? 'text-[#8B3D52]'
-                  : 'text-[#A88894]/70 hover:text-[#7A5560]/85'
+                  : 'text-[#8B6B78]/70 hover:text-[#7A5560]/85'
               }`}
             >
               <Icon className="w-5 h-5" strokeWidth={isActive ? 2.5 : 2} />

@@ -151,8 +151,8 @@ export function MedicationsScreen() {
 
           {meds.length === 0 ? (
             <div className="text-center py-16 bg-[#FFFAF5] rounded-3xl border border-[#E8D5CC]/70">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#A88894]/15 to-[#8B3D52]/12 border border-[#A88894]/20 flex items-center justify-center mx-auto mb-3">
-                <Pill className="w-6 h-6 text-[#A88894]" strokeWidth={1.6} />
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#8B6B78]/15 to-[#8B3D52]/12 border border-[#8B6B78]/20 flex items-center justify-center mx-auto mb-3">
+                <Pill className="w-6 h-6 text-[#8B6B78]" strokeWidth={1.6} />
               </div>
               <p className="text-[#7A5560]/85 text-sm">No medications logged yet.</p>
             </div>
@@ -168,7 +168,7 @@ export function MedicationsScreen() {
                     <p className="text-xs text-[#7A5560]/85 mt-0.5">
                       {med.dosage} · {med.frequency}
                     </p>
-                    <p className="text-[10px] text-[#A88894]/75 mt-1 uppercase tracking-wider">
+                    <p className="text-[10px] text-[#8B6B78]/75 mt-1 uppercase tracking-wider">
                       Started {med.startDate} · {med.category}
                     </p>
                   </div>
@@ -219,7 +219,7 @@ export function MedicationsScreen() {
                   {surg.date} · {surg.type}
                 </p>
                 {(surg.surgeon || surg.hospital) && (
-                  <p className="text-[10px] text-[#A88894]/75 mt-1">
+                  <p className="text-[10px] text-[#8B6B78]/75 mt-1">
                     {[surg.surgeon, surg.hospital].filter(Boolean).join(' · ')}
                   </p>
                 )}
@@ -236,19 +236,19 @@ export function MedicationsScreen() {
             value={medName}
             onChange={(e) => setMedName(e.target.value)}
             placeholder="Medication name"
-            className="w-full px-4 py-3 rounded-xl border border-[#E8D5CC] text-sm bg-[#3D1A24]/5 text-[#3D1A24] placeholder:text-[#A88894]/80 focus:outline-none focus:border-[#C97D7D]/50"
+            className="w-full px-4 py-3 rounded-xl border border-[#E8D5CC] text-sm bg-[#3D1A24]/5 text-[#3D1A24] placeholder:text-[#8B6B78]/80 focus:outline-none focus:border-[#C97D7D]/50"
           />
           <input
             value={medDosage}
             onChange={(e) => setMedDosage(e.target.value)}
             placeholder="Dosage (e.g., 400mg)"
-            className="w-full px-4 py-3 rounded-xl border border-[#E8D5CC] text-sm bg-[#3D1A24]/5 text-[#3D1A24] placeholder:text-[#A88894]/80 focus:outline-none focus:border-[#C97D7D]/50"
+            className="w-full px-4 py-3 rounded-xl border border-[#E8D5CC] text-sm bg-[#3D1A24]/5 text-[#3D1A24] placeholder:text-[#8B6B78]/80 focus:outline-none focus:border-[#C97D7D]/50"
           />
           <input
             value={medFreq}
             onChange={(e) => setMedFreq(e.target.value)}
             placeholder="Frequency (e.g., Twice daily)"
-            className="w-full px-4 py-3 rounded-xl border border-[#E8D5CC] text-sm bg-[#3D1A24]/5 text-[#3D1A24] placeholder:text-[#A88894]/80 focus:outline-none focus:border-[#C97D7D]/50"
+            className="w-full px-4 py-3 rounded-xl border border-[#E8D5CC] text-sm bg-[#3D1A24]/5 text-[#3D1A24] placeholder:text-[#8B6B78]/80 focus:outline-none focus:border-[#C97D7D]/50"
           />
           <div className="flex flex-wrap gap-2">
             {MED_CATEGORIES.map((c) => (
@@ -278,25 +278,25 @@ export function MedicationsScreen() {
             value={surgProcedure}
             onChange={(e) => setSurgProcedure(e.target.value)}
             placeholder="Procedure name"
-            className="w-full px-4 py-3 rounded-xl border border-[#E8D5CC] text-sm bg-[#3D1A24]/5 text-[#3D1A24] placeholder:text-[#A88894]/80 focus:outline-none focus:border-[#C97D7D]/50"
+            className="w-full px-4 py-3 rounded-xl border border-[#E8D5CC] text-sm bg-[#3D1A24]/5 text-[#3D1A24] placeholder:text-[#8B6B78]/80 focus:outline-none focus:border-[#C97D7D]/50"
           />
           <input
             type="date"
             value={surgDate}
             onChange={(e) => setSurgDate(e.target.value)}
-            className="w-full px-4 py-3 rounded-xl border border-[#E8D5CC] text-sm bg-[#3D1A24]/5 text-[#3D1A24] placeholder:text-[#A88894]/80 focus:outline-none focus:border-[#C97D7D]/50"
+            className="w-full px-4 py-3 rounded-xl border border-[#E8D5CC] text-sm bg-[#3D1A24]/5 text-[#3D1A24] placeholder:text-[#8B6B78]/80 focus:outline-none focus:border-[#C97D7D]/50"
           />
           <input
             value={surgSurgeon}
             onChange={(e) => setSurgSurgeon(e.target.value)}
             placeholder="Surgeon (optional)"
-            className="w-full px-4 py-3 rounded-xl border border-[#E8D5CC] text-sm bg-[#3D1A24]/5 text-[#3D1A24] placeholder:text-[#A88894]/80 focus:outline-none focus:border-[#C97D7D]/50"
+            className="w-full px-4 py-3 rounded-xl border border-[#E8D5CC] text-sm bg-[#3D1A24]/5 text-[#3D1A24] placeholder:text-[#8B6B78]/80 focus:outline-none focus:border-[#C97D7D]/50"
           />
           <input
             value={surgHospital}
             onChange={(e) => setSurgHospital(e.target.value)}
             placeholder="Hospital (optional)"
-            className="w-full px-4 py-3 rounded-xl border border-[#E8D5CC] text-sm bg-[#3D1A24]/5 text-[#3D1A24] placeholder:text-[#A88894]/80 focus:outline-none focus:border-[#C97D7D]/50"
+            className="w-full px-4 py-3 rounded-xl border border-[#E8D5CC] text-sm bg-[#3D1A24]/5 text-[#3D1A24] placeholder:text-[#8B6B78]/80 focus:outline-none focus:border-[#C97D7D]/50"
           />
           <div className="flex flex-wrap gap-2">
             {SURGERY_TYPES.map((t) => (

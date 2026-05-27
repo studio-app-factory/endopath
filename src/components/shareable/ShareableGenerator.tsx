@@ -178,7 +178,7 @@ export function ShareableGenerator() {
 
       {/* Template picker */}
       <div>
-        <p className="text-[10px] font-medium text-[#A88894] uppercase tracking-[0.18em] mb-3 text-center">
+        <p className="text-[10px] font-medium text-[#8B6B78] uppercase tracking-[0.18em] mb-3 text-center">
           Template
         </p>
         <div className="flex justify-center gap-3 flex-wrap">
@@ -296,7 +296,7 @@ export function ShareableGenerator() {
           </div>
 
           {!isPremium && (
-            <p className="text-center text-xs text-[#A88894]">
+            <p className="text-center text-xs text-[#8B6B78]">
               Free version includes Endopath watermark.{' '}
               <button
                 onClick={() => useStore.getState().triggerPaywall('share_export')}

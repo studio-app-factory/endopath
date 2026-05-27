@@ -19,8 +19,8 @@ Use these answers when filling Play Console → Data Safety.
 | Device or other IDs (Advertising ID, IDFA) | **Yes (free tier only, with consent)** | Yes (Google AdMob) | Yes | Advertising or marketing | Not collected for Pro / trial users. Not collected for free users until they tap Accept on the in-app consent dialog. |
 | IP address | **Yes (free tier only, with consent)** | Yes (Google AdMob) | Yes | Advertising or marketing | Used by AdMob for fraud prevention and approximate location. |
 | Approximate location | **Yes (free tier only, with consent — derived from IP by AdMob)** | Yes (Google AdMob) | Yes | Advertising or marketing | Derived from IP by AdMob; not collected by Endopath itself. |
-| Crash logs | **Yes** | Yes (Sentry) | No | App functionality, analytics | No health data. Screen name only. |
-| App interactions (analytics) | **Yes** | Yes (Mixpanel) | No | Analytics | Anonymous device ID, no IDFA, no health data. |
+| Crash logs | **No** | No | n/a | n/a | No crash reporting SDK is bundled. |
+| App interactions (analytics) | **No** | No | n/a | n/a | Usage events are stored locally on-device only. |
 | Purchase history | **Yes** | Yes (RevenueCat, Google Play) | No | App functionality | Subscription state only. |
 
 ## en (English)

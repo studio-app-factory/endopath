@@ -21,9 +21,9 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
   {
     title: 'Your Body,\nYour Data',
     subtitle:
-      'Endopath is a privacy-first endometriosis tracker. All your data stays on your device — encrypted, secure, yours alone.',
+      'Endopath is a privacy-first endometriosis tracker. All your data stays on your device — never uploaded, never shared. Yours alone.',
     icon: ShieldCheck,
-    gradient: 'from-[#A88894] to-[#8B3D52]',
+    gradient: 'from-[#8B6B78] to-[#8B3D52]',
     glow: 'shadow-[#A85D6A]/30',
     cta: 'Next',
   },
@@ -57,13 +57,11 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
 ];
 
 export function OnboardingFlow() {
-  const {
-    onboardingStep,
-    nextOnboardingStep,
-    completeOnboarding,
-    triggerPaywall,
-    startOnboarding,
-  } = useStore();
+  const onboardingStep = useStore((s) => s.onboardingStep);
+  const nextOnboardingStep = useStore((s) => s.nextOnboardingStep);
+  const completeOnboarding = useStore((s) => s.completeOnboarding);
+  const triggerPaywall = useStore((s) => s.triggerPaywall);
+  const startOnboarding = useStore((s) => s.startOnboarding);
   const [animating, setAnimating] = useState(false);
 
   useEffect(() => {
@@ -158,7 +156,7 @@ export function OnboardingFlow() {
         {onboardingStep < 4 && (
           <button
             onClick={handleSkip}
-            className="w-full py-3 text-sm text-[#A88894] hover:text-[#7A5560] transition-colors cursor-pointer font-medium"
+            className="w-full py-3 text-sm text-[#8B6B78] hover:text-[#7A5560] transition-colors cursor-pointer font-medium"
           >
             Skip for now
           </button>

@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import { useStore } from '@/lib/store';
 import { track, newSession } from '@/lib/analytics';
 import { initBilling } from '@/lib/billing';
+import { initNativeShell, registerBackButtonHandler } from '@/lib/platform';
 import { OnboardingFlow } from '@/components/onboarding/OnboardingFlow';
 import { HomeScreen } from '@/components/home/HomeScreen';
 import { LogEntry } from '@/components/tracking/LogEntry';
@@ -14,21 +15,23 @@ import { ShareableGenerator } from '@/components/shareable/ShareableGenerator';
 import { CycleCalendar } from '@/components/calendar/CycleCalendar';
 import { MedicationsScreen } from '@/components/medications/MedicationsScreen';
 import { SettingsScreen } from '@/components/settings/SettingsScreen';
+import { InsightsScreen } from '@/components/insights/InsightsScreen';
 import { PaywallScreen } from '@/components/paywall/PaywallScreen';
 import { CrossPromoCarousel } from '@/components/cross-promo/CrossPromoCarousel';
 import { BottomNav } from '@/components/ui/BottomNav';
 import { ConsentDialog } from '@/components/ads/ConsentDialog';
 
 export default function App() {
-  const {
-    currentScreen,
-    isOnboarding,
-    showPaywall,
-    showCrossPromo,
-    loadProfile,
-    startSession,
-    endSession,
-  } = useStore();
+  // Selector form so a change to (say) trialEndsAt doesn't re-render the
+  // whole tree from the App root. Each useStore() call subscribes to just
+  // its own slice.
+  const currentScreen = useStore((s) => s.currentScreen);
+  const isOnboarding = useStore((s) => s.isOnboarding);
+  const showPaywall = useStore((s) => s.showPaywall);
+  const showCrossPromo = useStore((s) => s.showCrossPromo);
+  const loadProfile = useStore((s) => s.loadProfile);
+  const startSession = useStore((s) => s.startSession);
+  const endSession = useStore((s) => s.endSession);
 
   // Initialize app
   useEffect(() => {
@@ -64,6 +67,10 @@ export default function App() {
     initBilling().finally(() => {
       loadProfile();
     });
+    // Native shell — hides splash, sets status bar style. Web → no-op.
+    initNativeShell();
+    // Android hardware back button → screen-aware navigation.
+    registerBackButtonHandler();
     startSession();
     newSession();
 
@@ -120,6 +127,12 @@ export default function App() {
         return (
           <div className="px-5 pt-4 pb-28 max-w-lg mx-auto">
             <SettingsScreen />
+          </div>
+        );
+      case 'insights':
+        return (
+          <div className="px-5 pt-4 pb-28 max-w-lg mx-auto">
+            <InsightsScreen />
           </div>
         );
       case 'pain_map':

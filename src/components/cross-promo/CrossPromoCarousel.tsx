@@ -18,7 +18,7 @@ const FLOSEED_APPS: Array<FloseedApp & { iconComponent: LucideIcon; gradient: st
     discountPercent: 30,
     deepLink: 'https://apps.apple.com/app/migrainary/id000',
     iconComponent: Brain,
-    gradient: 'from-[#A88894] to-[#8B3D52]',
+    gradient: 'from-[#8B6B78] to-[#8B3D52]',
   },
   {
     id: 'fibroline',
@@ -51,12 +51,12 @@ const FLOSEED_APPS: Array<FloseedApp & { iconComponent: LucideIcon; gradient: st
     discountPercent: 30,
     deepLink: 'https://apps.apple.com/app/mscompass/id000',
     iconComponent: Compass,
-    gradient: 'from-[#A88894] to-[#C97D7D]',
+    gradient: 'from-[#8B6B78] to-[#C97D7D]',
   },
 ];
 
 export function CrossPromoCarousel() {
-  const { closeCrossPromo } = useStore();
+  const closeCrossPromo = useStore((s) => s.closeCrossPromo);
 
   const handleAppTap = (app: FloseedApp) => {
     track('cross_promo_tapped', { app_id: app.id });
@@ -108,11 +108,11 @@ export function CrossPromoCarousel() {
                   </span>
                 </div>
                 <p className="text-xs text-[#7A5560]/85 mt-0.5 line-clamp-2">{app.description}</p>
-                <p className="text-[10px] text-[#A88894]/75 mt-1 uppercase tracking-wider">
+                <p className="text-[10px] text-[#8B6B78]/75 mt-1 uppercase tracking-wider">
                   {app.category}
                 </p>
               </div>
-              <ChevronRight className="w-4 h-4 text-[#A88894] flex-shrink-0" />
+              <ChevronRight className="w-4 h-4 text-[#8B6B78] flex-shrink-0" />
             </button>
           );
         })}
@@ -122,7 +122,7 @@ export function CrossPromoCarousel() {
       <div className="px-6 pb-10 pt-4">
         <button
           onClick={closeCrossPromo}
-          className="w-full py-3 text-sm text-[#A88894] hover:text-[#7A5560] transition-colors cursor-pointer font-medium"
+          className="w-full py-3 text-sm text-[#8B6B78] hover:text-[#7A5560] transition-colors cursor-pointer font-medium"
         >
           Maybe later
         </button>

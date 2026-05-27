@@ -14,8 +14,10 @@ const config: CapacitorConfig = {
   },
   plugins: {
     SplashScreen: {
-      launchShowDuration: 2000,
-      launchAutoHide: true,
+      // App calls SplashScreen.hide() from src/lib/platform.ts after first
+      // meaningful render — that avoids the fixed 2-second hard delay and
+      // lets snappy devices skip straight to onboarding/home.
+      launchAutoHide: false,
       backgroundColor: '#FAF5F0',
       androidSplashResourceName: 'splash',
       androidScaleType: 'CENTER_CROP',
